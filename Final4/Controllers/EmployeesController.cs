@@ -53,19 +53,31 @@ namespace Final4.Controllers
         [Route("UpdateEmployeeBy{id}")]
         public IActionResult UpdateEmployee(Guid id, UpdateEmployee obj)
         {
-            var UpdateEmployee = _dbContext.Employee.Find(id);
-            if (UpdateEmployee != null)
+            var existingEmployee = _dbContext.Employee.Find(id);
+            if (existingEmployee != null)
             {
-                UpdateEmployee.Name = obj.Name;
-                UpdateEmployee.Email = obj.Email;
-                UpdateEmployee.Phone = obj.Phone;
-                UpdateEmployee.Salary = obj.Salary;
+                // Chỉ cập nhật các trường nếu có giá trị
+                if (!string.IsNullOrEmpty(obj.Name))
+                    existingEmployee.Name = obj.Name;
+
+                if (!string.IsNullOrEmpty(obj.Email))
+                    existingEmployee.Email = obj.Email;
+
+                if (!string.IsNullOrEmpty(obj.Phone))
+                    existingEmployee.Phone = obj.Phone;
+
+                if (obj.Salary.HasValue) // Kiểm tra nếu Salary không phải null
+                    existingEmployee.Salary = obj.Salary.Value;
+
+                _dbContext.SaveChanges();
+                return Ok(existingEmployee);
             }
             else
+            {
                 return NotFound("Not Found Employee To Update");
-            _dbContext.SaveChanges();
-            return Ok(UpdateEmployee);
+            }
         }
+
         [HttpDelete]
         [Route("DeleteEmployeeBy{id}")]
         public IActionResult DeleteEmployee(Guid id) 
