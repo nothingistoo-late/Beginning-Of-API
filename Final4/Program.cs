@@ -1,5 +1,6 @@
-using Final4.Data;
+﻿using Final4.Data;
 using Microsoft.EntityFrameworkCore;
+using Final4.Controllers;
 
 var builder = WebApplication.CreateBuilder(args);
 

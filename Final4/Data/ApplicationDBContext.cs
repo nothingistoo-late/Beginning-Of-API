@@ -5,11 +5,9 @@ namespace Final4.Data
 {
     public class ApplicationDBContext : DbContext
     {
-        public ApplicationDBContext(DbContextOptions<ApplicationDBContext> options) : base(options)
-        { 
-        }
-        public DbSet<Employee> Employee { get; set; }
+        public ApplicationDBContext(DbContextOptions options): base(options) { }
 
-        
+        public DbSet<Employee> Employees { get; set; }
+        public DbSet<Account> Accounts { get; set; }
     }
 }

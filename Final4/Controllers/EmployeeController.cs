@@ -21,7 +21,7 @@ namespace Final4.Controllers
         [Route("GetAllEmployee")]
         public IActionResult GetAllEmployees()
         {
-            return Ok(_dbContext.Employee.ToList());
+            return Ok(_dbContext.Employees.ToList());
         }
         [HttpPost]
         [Route("AddEmployee")]
@@ -32,9 +32,9 @@ namespace Final4.Controllers
                 Name = obj.Name,
                 Email = obj.Email,
                 Phone = obj.Phone,
-                Salary = obj.Salary,
+                Salary = obj.Salary
             };
-            _dbContext.Employee.Add(EmployeeEntity);
+            _dbContext.Employees.Add(EmployeeEntity);
             _dbContext.SaveChanges();
             return Ok(EmployeeEntity);
         }
@@ -43,7 +43,7 @@ namespace Final4.Controllers
         [Route("SearchEmployeeBy{id:guid}")]
         public IActionResult GetEmployeeByID(Guid id)
         {
-            var employee = _dbContext.Employee.Find(id);
+            var employee = _dbContext.Employees.Find(id);
             if (employee == null)
                 return NotFound();
             return Ok(employee);
@@ -53,7 +53,7 @@ namespace Final4.Controllers
         [Route("UpdateEmployeeBy{id}")]
         public IActionResult UpdateEmployee(Guid id, UpdateEmployee obj)
         {
-            var existingEmployee = _dbContext.Employee.Find(id);
+            var existingEmployee = _dbContext.Employees.Find(id);
             if (existingEmployee != null)
             {
                 // Chỉ cập nhật các trường nếu có giá trị
@@ -80,12 +80,12 @@ namespace Final4.Controllers
 
         [HttpDelete]
         [Route("DeleteEmployeeBy{id}")]
-        public IActionResult DeleteEmployee(Guid id) 
+        public IActionResult DeleteEmployee(Guid id)
         {
-            var Employee = _dbContext.Employee.Find(id);
+            var Employee = _dbContext.Employees.Find(id);
             if (Employee == null)
                 return NotFound("Not Found Employee To Delete");
-            _dbContext.Employee.Remove(Employee);
+            _dbContext.Employees.Remove(Employee);
             _dbContext.SaveChanges();
             return Ok();
         }
