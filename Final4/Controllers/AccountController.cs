@@ -1,8 +1,13 @@
-﻿using Final4.Data;
+﻿using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
+using System.Text;
+using Final4.Data;
 using Final4.DTO.Account;
 using Final4.Model.Entities;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.IdentityModel.Tokens;
 using Microsoft.VisualStudio.Web.CodeGenerators.Mvc.Templates.BlazorIdentity.Pages.Manage;
 
 namespace Final4.Controllers
@@ -11,10 +16,12 @@ namespace Final4.Controllers
     [ApiController]
     public class AccountController : ControllerBase
     {
+        private readonly IConfiguration _configuration;
         private readonly ApplicationDBContext _dbContext;
-        public AccountController(ApplicationDBContext DBContext)
+        public AccountController(ApplicationDBContext DBContext, IConfiguration configuration)
         {
             _dbContext = DBContext;
+            _configuration = configuration;
         }
 
         [HttpPost]
@@ -29,7 +36,7 @@ namespace Final4.Controllers
                 Name = obj.Name,
                 Email = obj.Email,
                 Password = obj.Password,
-                RoleID = "1"
+                RoleID = "User"
             };
             _dbContext.Accounts.Add(AccountEntity);
             _dbContext.SaveChanges();
@@ -38,19 +45,65 @@ namespace Final4.Controllers
 
         [HttpPost]
         [Route("Login")]
-        public IActionResult Login(string email, string password)
+        public IActionResult Login(LoginUserAccount obj)
         {
             var listUser = _dbContext.Accounts.ToList();
-            var checkAccountExits = listUser.FirstOrDefault(x => x.Email == email && x.Password == password);
+            var checkAccountExits = listUser.FirstOrDefault(x => x.Email == obj.Email && x.Password == obj.Password);
 
             if (checkAccountExits != null)
-                return Ok();
-            else return NotFound();
+            {
+                // Lấy thông tin từ appsettings
+                var jwtConfig = _configuration.GetSection("JwtConfig");
+                var issuer = jwtConfig["Issuer"];
+                var audience = jwtConfig["Audience"];
+                var key = jwtConfig["Key"];
+                var expirationMinutes = int.Parse(jwtConfig["TokenValidityMins"]);
+
+                // Tạo các claim (ví dụ Role)
+                var claims = new[]
+                {
+                    new Claim(ClaimTypes.Email, checkAccountExits.Email),
+                    new Claim(ClaimTypes.Role, checkAccountExits.RoleID)  // Thêm role vào claim
+                };
+
+                // Tạo token
+                var keyByteArray = Encoding.UTF8.GetBytes(key);
+                var securityKey = new SymmetricSecurityKey(keyByteArray);
+                var credentials = new SigningCredentials(securityKey, SecurityAlgorithms.HmacSha256);
+
+                var expiration = DateTime.UtcNow.AddMinutes(expirationMinutes);
+
+                var tokenDescriptor = new SecurityTokenDescriptor
+                {
+                    Subject = new ClaimsIdentity(claims),
+                    Expires = expiration,
+                    Issuer = issuer,
+                    Audience = audience,
+                    SigningCredentials = credentials
+                };
+
+                var tokenHandler = new JwtSecurityTokenHandler();
+                var token = tokenHandler.CreateToken(tokenDescriptor);
+
+                // Trả về token và thời gian hết hạn
+                var response = new
+                {
+                    Token = tokenHandler.WriteToken(token),
+                    Expiration = expiration
+                };
+
+                return Ok(response);  // Trả về token và thời gian hết hạn
+            }
+            else
+            {
+                return Unauthorized("Invalid credentials.");
+            }
         }
 
+        [Authorize(Policy = "AdminPolicy")]
         [HttpGet]
         [Route("GetAllAccount")]
-        public IActionResult GetAccount() 
+        public IActionResult GetAccount()
         {
             //return Ok(_dbContext.Accounts.Select(a=> new {a.Name, a.Email}) .ToList());
             return Ok(_dbContext.Accounts.ToList());
