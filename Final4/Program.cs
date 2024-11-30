@@ -76,7 +76,7 @@ builder.Services.AddAuthorization(options =>
     options.AddPolicy("StaffPolicy", policy =>
         policy.RequireRole("Staff"));
 });
-
+builder.Services.AddSingleton<EmailService>();
 var app = builder.Build();
 app.UseAuthentication(); // Kích hoạt authentication
 app.UseAuthorization();  // Kích hoạt authorization

@@ -108,5 +108,22 @@ namespace Final4.Controllers
             //return Ok(_dbContext.Accounts.Select(a=> new {a.Name, a.Email}) .ToList());
             return Ok(_dbContext.Accounts.ToList());
         }
+
+        [HttpPut]
+        [Route("FogetPassword{email}")]
+        public IActionResult FogetPassword(string email, ResetPassword obj)
+        {
+            var listUser = _dbContext.Accounts.ToList();
+            var checkAccountExits = listUser.FirstOrDefault(x => x.Email == email);
+            if (checkAccountExits == null)
+                return BadRequest("Unvalid Email, Check Email And Try Again!!!");
+            if (obj.NewPassword.Equals(obj.ConfirmPassword))
+            {
+                checkAccountExits.Password = obj.ConfirmPassword;
+                _dbContext.SaveChanges();
+                return Ok("Updated Completed");
+            }
+            else return BadRequest("Confirm Password Doesnt Match New Password");
+        }
     }
 }
