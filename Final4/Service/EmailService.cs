@@ -5,7 +5,7 @@ using MimeKit;
 
 public class EmailService
 {
-    private readonly SmtpSettings _smtpSettings;
+    private readonly SmtpSettings? _smtpSettings;
 
     public EmailService(IConfiguration configuration)
     {

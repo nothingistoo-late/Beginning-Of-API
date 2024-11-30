@@ -18,10 +18,12 @@ namespace Final4.Controllers
     {
         private readonly IConfiguration _configuration;
         private readonly ApplicationDBContext _dbContext;
-        public AccountController(ApplicationDBContext DBContext, IConfiguration configuration)
+        private readonly EmailService _emailService;
+        public AccountController(ApplicationDBContext DBContext, IConfiguration configuration, EmailService emailService)
         {
             _dbContext = DBContext;
             _configuration = configuration;
+            _emailService = emailService;
         }
 
         [HttpPost]
@@ -101,14 +103,29 @@ namespace Final4.Controllers
         }
 
         [Authorize(Policy = "AdminPolicy")]
+        [HttpDelete]
+        [Route("DeleteUserBy{id}")]
+        public IActionResult DeleteUserByID(int id)
+        {
+            var user = _dbContext.Accounts.ToList().FirstOrDefault(a => a.Id == id);
+            if (user == null)
+                return BadRequest("InValid User");
+            _dbContext.Remove(user);
+            _dbContext.SaveChanges();
+            return Ok("Delete Succesfully!!");
+        }
+
+        [Authorize(Policy = "AdminPolicy")]
         [HttpGet]
         [Route("GetAllAccount")]
         public IActionResult GetAccount()
         {
-            //return Ok(_dbContext.Accounts.Select(a=> new {a.Name, a.Email}) .ToList());
-            return Ok(_dbContext.Accounts.ToList());
+            // Kiểm tra xem người dùng có vai trò 'Admin' không
+            if (!User.IsInRole("Admin"))
+                return Unauthorized("You are not authorized to access this resource.");
+            else
+                return Ok(_dbContext.Accounts.ToList());
         }
-
         [HttpPut]
         [Route("FogetPassword{email}")]
         public IActionResult FogetPassword(string email, ResetPassword obj)
@@ -121,6 +138,7 @@ namespace Final4.Controllers
             {
                 checkAccountExits.Password = obj.ConfirmPassword;
                 _dbContext.SaveChanges();
+                _emailService.SendEmailAsync(email, "Reset Password Succesfully", "Your Password Has Been Changed, Your New Password Is " + obj.ConfirmPassword);
                 return Ok("Updated Completed");
             }
             else return BadRequest("Confirm Password Doesnt Match New Password");

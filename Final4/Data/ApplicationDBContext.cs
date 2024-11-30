@@ -9,5 +9,6 @@ namespace Final4.Data
 
         public DbSet<Employee> Employees { get; set; }
         public DbSet<Account> Accounts { get; set; }
+        public DbSet<Flower> Flowers { get; set; }   
     }
 }

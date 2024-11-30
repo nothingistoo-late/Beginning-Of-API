@@ -11,7 +11,7 @@ var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 
 builder.Services.AddControllers();
-// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
+// Cấu hình Swagger/OpenAPI
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddDbContext<ApplicationDBContext>(options => options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
@@ -23,6 +23,7 @@ builder.Services.AddAuthentication(options =>
 })
 .AddJwtBearer(options =>
 {
+    options.RequireHttpsMetadata = false;  // Chỉ dùng trong phát triển, bỏ khi triển khai thực tế
     options.TokenValidationParameters = new TokenValidationParameters
     {
         ValidateIssuer = true,
@@ -77,19 +78,19 @@ builder.Services.AddAuthorization(options =>
         policy.RequireRole("Staff"));
 });
 builder.Services.AddSingleton<EmailService>();
+
 var app = builder.Build();
-app.UseAuthentication(); // Kích hoạt authentication
-app.UseAuthorization();  // Kích hoạt authorization
+
+app.UseHttpsRedirection(); // Đảm bảo chuyển hướng HTTP sang HTTPS
+app.UseAuthentication();   // Kích hoạt authentication
+app.UseAuthorization();    // Kích hoạt authorization
+
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
     app.UseSwaggerUI();
 }
-
-app.UseHttpsRedirection();
-
-app.UseAuthorization();
 
 app.MapControllers();
 
