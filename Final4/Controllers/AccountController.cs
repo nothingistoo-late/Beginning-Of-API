@@ -32,7 +32,7 @@ namespace Final4.Controllers
         {
             var listUser = _dbContext.Accounts.ToList();
             if (listUser.Any(x => x.Email == obj.Email))
-                return BadRequest("Exited Account");
+                return BadRequest("Exited Gmail, Please Prove Another Gmail Or Click The Forgot Password Button ");
             var AccountEntity = new Account()
             {
                 Name = obj.Name,
@@ -41,6 +41,7 @@ namespace Final4.Controllers
                 RoleID = "User"
             };
             _dbContext.Accounts.Add(AccountEntity);
+            _emailService.SendEmailAsync(obj.Email, "Created Account Successfully", "You Had Create A Account In Our Page, Your Passowrd Is '" + obj.Password + "'\n Please Do Not Provide This Password For Any One ");
             _dbContext.SaveChanges();
             return Ok(obj);
         }
