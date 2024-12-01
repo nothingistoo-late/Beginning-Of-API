@@ -3,6 +3,7 @@ using Final4.DTO.Flower;
 using Final4.Model.Entities;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace Final4.Controllers
 {
@@ -19,52 +20,51 @@ namespace Final4.Controllers
 
         [HttpGet]
         [Route("GetAllFlower")]
-        public IActionResult GetAllFlower()
+        public async Task<IActionResult> GetAllFlower()
         {
-            return Ok(_dbcontext.Flowers.ToList());
+            return Ok(await _dbcontext.Flowers.ToListAsync());
         }
 
         [HttpGet]
         [Route("GetAllFlowerBy{FlowerName}")]
-        public IActionResult GetFlowerByName(string FlowerName)
+        public async Task<IActionResult> GetFlowerByName(string FlowerName)
         {
-            var listFlower = _dbcontext.Flowers.ToList();
-            return Ok(listFlower.FindAll(x => x.FlowerName.ToLower().Contains(FlowerName.ToLower())));
+            var flowers = await _dbcontext.Flowers
+                .Where(x => x.FlowerName.ToLower().Contains(FlowerName.ToLower()))
+                .ToListAsync();
+            return Ok(flowers);
         }
 
         [HttpPost]
         [Route("AddFlower")]
-        public IActionResult AddFlower(AddFlower obj)
+        public async Task<IActionResult> AddFlower(AddFlower obj)
         {
             Flower
              flower = new()
-            {
-                FlowerName = obj.FlowerName,
-                FlowerDescription = obj.FlowerDescription,
-                FlowerPrice = obj.FlowerPrice,
-                Availability = obj.Availability,
-                ImgUrl = obj.ImgUrl
-            };
+             {
+                 FlowerName = obj.FlowerName,
+                 FlowerDescription = obj.FlowerDescription,
+                 FlowerPrice = obj.FlowerPrice,
+                 Availability = obj.Availability,
+                 ImgUrl = obj.ImgUrl
+             };
 
             _dbcontext.Flowers.Add(flower);
-            _dbcontext.SaveChanges();
+            await _dbcontext.SaveChangesAsync();
             return Ok(flower);
         }
 
         [HttpDelete]
         [Route("DeleteFlowerBy{FlowerId}")]
-        public IActionResult DeleteFlower(int FlowerId)
+        public async Task<IActionResult> DeleteFlower(int FlowerId)
         {
-            var flower = _dbcontext.Flowers.FirstOrDefault(x => x.FlowerId == FlowerId);
-
+            var flower = await _dbcontext.Flowers.FirstOrDefaultAsync(x => x.FlowerId == FlowerId);
             if (flower == null)
             {
                 return NotFound($"Flower with ID {FlowerId} not found.");
             }
-
             _dbcontext.Flowers.Remove(flower);
-            _dbcontext.SaveChanges();
-
+            await _dbcontext.SaveChangesAsync();
             return Ok($"Flower with ID {FlowerId} has been deleted successfully.");
         }
     }

@@ -7,6 +7,7 @@ using Final4.Model.Entities;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.VisualStudio.Web.CodeGenerators.Mvc.Templates.BlazorIdentity.Pages.Manage;
 
@@ -28,7 +29,7 @@ namespace Final4.Controllers
 
         [HttpPost]
         [Route("Register")]
-        public IActionResult RegisterUserAccount(RegisterUserAccount obj)
+        public async Task<IActionResult> RegisterUserAccount(RegisterUserAccount obj)
         {
             var listUser = _dbContext.Accounts.ToList();
             if (listUser.Any(x => x.Email == obj.Email))
@@ -41,16 +42,16 @@ namespace Final4.Controllers
                 RoleID = "User"
             };
             _dbContext.Accounts.Add(AccountEntity);
-            _emailService.SendEmailAsync(obj.Email, "Created Account Successfully", "You Had Create A Account In Our Page, Your Passowrd Is '" + obj.Password + "'\n Please Do Not Provide This Password For Any One ");
             _dbContext.SaveChanges();
+            await _emailService.SendEmailAsync(obj.Email, "Created Account Successfully", "You Had Create A Account In Our Page, Your Passowrd Is '" + obj.Password + "'\n Please Do Not Provide This Password For Any One ");
             return Ok(obj);
         }
 
         [HttpPost]
         [Route("Login")]
-        public IActionResult Login(LoginUserAccount obj)
+        public async Task<IActionResult> Login(LoginUserAccount obj)
         {
-            var listUser = _dbContext.Accounts.ToList();
+            var listUser = await _dbContext.Accounts.ToListAsync();
             var checkAccountExits = listUser.FirstOrDefault(x => x.Email == obj.Email && x.Password == obj.Password);
 
             if (checkAccountExits != null)
@@ -106,40 +107,40 @@ namespace Final4.Controllers
         [Authorize(Policy = "AdminPolicy")]
         [HttpDelete]
         [Route("DeleteUserBy{id}")]
-        public IActionResult DeleteUserByID(int id)
+        public async Task<IActionResult> DeleteUserByID(int id)
         {
-            var user = _dbContext.Accounts.ToList().FirstOrDefault(a => a.Id == id);
+            var user = await _dbContext.Accounts.FirstOrDefaultAsync(a => a.Id == id);
             if (user == null)
                 return BadRequest("InValid User");
             _dbContext.Remove(user);
-            _dbContext.SaveChanges();
+            await _dbContext.SaveChangesAsync();
             return Ok("Delete Succesfully!!");
         }
 
         [Authorize(Policy = "AdminPolicy")]
         [HttpGet]
         [Route("GetAllAccount")]
-        public IActionResult GetAccount()
+        public async Task<IActionResult> GetAccount()
         {
             // Kiểm tra xem người dùng có vai trò 'Admin' không
             if (!User.IsInRole("Admin"))
                 return Unauthorized("You are not authorized to access this resource.");
             else
-                return Ok(_dbContext.Accounts.ToList());
+                return Ok(await _dbContext.Accounts.ToListAsync());
         }
         [HttpPut]
         [Route("FogetPassword{email}")]
-        public IActionResult FogetPassword(string email, ResetPassword obj)
+        public async Task<IActionResult> FogetPassword(string email, ResetPassword obj)
         {
-            var listUser = _dbContext.Accounts.ToList();
+            var listUser = await _dbContext.Accounts.ToListAsync();
             var checkAccountExits = listUser.FirstOrDefault(x => x.Email == email);
             if (checkAccountExits == null)
                 return BadRequest("Unvalid Email, Check Email And Try Again!!!");
             if (obj.NewPassword.Equals(obj.ConfirmPassword))
             {
                 checkAccountExits.Password = obj.ConfirmPassword;
-                _dbContext.SaveChanges();
-                _emailService.SendEmailAsync(email, "Reset Password Succesfully", "Your Password Has Been Changed, Your New Password Is " + obj.ConfirmPassword);
+                await _dbContext.SaveChangesAsync();
+                await _emailService.SendEmailAsync(email, "Reset Password Succesfully", "Your Password Has Been Changed, Your New Password Is " + obj.ConfirmPassword);
                 return Ok("Updated Completed");
             }
             else return BadRequest("Confirm Password Doesnt Match New Password");

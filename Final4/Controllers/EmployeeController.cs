@@ -19,13 +19,13 @@ namespace Final4.Controllers
         }
         [HttpGet]
         [Route("GetAllEmployee")]
-        public IActionResult GetAllEmployees()
+        public async Task<IActionResult> GetAllEmployees()
         {
-            return Ok(_dbContext.Employees.ToList());
+            return Ok(await _dbContext.Employees.ToListAsync());
         }
         [HttpPost]
         [Route("AddEmployee")]
-        public IActionResult AddEmployee(AddEmployes obj)
+        public async Task<IActionResult> AddEmployee(AddEmployes obj)
         {
             var EmployeeEntity = new Employee()
             {
@@ -35,15 +35,15 @@ namespace Final4.Controllers
                 Salary = obj.Salary
             };
             _dbContext.Employees.Add(EmployeeEntity);
-            _dbContext.SaveChanges();
+            await _dbContext.SaveChangesAsync();
             return Ok(EmployeeEntity);
         }
 
         [HttpGet]
         [Route("SearchEmployeeBy{id:guid}")]
-        public IActionResult GetEmployeeByID(Guid id)
+        public async Task<IActionResult> GetEmployeeByID(Guid id)
         {
-            var employee = _dbContext.Employees.Find(id);
+            var employee = await _dbContext.Employees.FindAsync(id);
             if (employee == null)
                 return NotFound();
             return Ok(employee);
@@ -51,9 +51,9 @@ namespace Final4.Controllers
 
         [HttpPut]
         [Route("UpdateEmployeeBy{id}")]
-        public IActionResult UpdateEmployee(Guid id, UpdateEmployee obj)
+        public async Task<IActionResult> UpdateEmployee(Guid id, UpdateEmployee obj)
         {
-            var existingEmployee = _dbContext.Employees.Find(id);
+            var existingEmployee = await _dbContext.Employees.FindAsync(id);
             if (existingEmployee != null)
             {
                 // Chỉ cập nhật các trường nếu có giá trị
@@ -69,7 +69,7 @@ namespace Final4.Controllers
                 if (obj.Salary.HasValue) // Kiểm tra nếu Salary không phải null
                     existingEmployee.Salary = obj.Salary.Value;
 
-                _dbContext.SaveChanges();
+                await _dbContext.SaveChangesAsync();
                 return Ok(existingEmployee);
             }
             else
@@ -80,13 +80,13 @@ namespace Final4.Controllers
 
         [HttpDelete]
         [Route("DeleteEmployeeBy{id}")]
-        public IActionResult DeleteEmployee(Guid id)
+        public async Task<IActionResult> DeleteEmployee(Guid id)
         {
-            var Employee = _dbContext.Employees.Find(id);
+            var Employee = await _dbContext.Employees.FindAsync(id);
             if (Employee == null)
                 return NotFound("Not Found Employee To Delete");
             _dbContext.Employees.Remove(Employee);
-            _dbContext.SaveChanges();
+            await _dbContext.SaveChangesAsync();
             return Ok();
         }
     }
