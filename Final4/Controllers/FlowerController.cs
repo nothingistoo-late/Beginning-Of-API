@@ -44,8 +44,8 @@ namespace Final4.Controllers
              {
                  FlowerName = obj.FlowerName,
                  FlowerDescription = obj.FlowerDescription,
+                 FlowerQuantity = obj.FlowerQuantity,
                  FlowerPrice = obj.FlowerPrice,
-                 Availability = obj.Availability,
                  ImgUrl = obj.ImgUrl
              };
 
@@ -53,6 +53,36 @@ namespace Final4.Controllers
             await _dbcontext.SaveChangesAsync();
             return Ok(flower);
         }
+        [HttpPost]
+        [Route("UpdateFlowerBy{id}")]
+        public async Task<IActionResult> UpdateFlower(int id, UpdateFlower obj)
+        {
+            Flower? Flower = await _dbcontext.Flowers.FindAsync(id);
+            if (Flower == null)
+                return NotFound("Flower Id Is Not Exit!!\n Please Check FlowerID Again!!");
+            else
+            {
+                // Chỉ cập nhật các trường nếu có giá trị
+                if (!string.IsNullOrEmpty(obj.FlowerName))
+                    Flower.FlowerName = obj.FlowerName;
+
+                if (!string.IsNullOrEmpty(obj.FlowerDescription))
+                    Flower.FlowerDescription = obj.FlowerDescription;
+
+                if (!string.IsNullOrEmpty(obj.ImgUrl))
+                    Flower.ImgUrl = obj.ImgUrl;
+
+                if (obj.FlowerQuantity.HasValue)
+                    Flower.FlowerQuantity = obj.FlowerQuantity.Value;
+
+                if (obj.FlowerPrice.HasValue)
+                    Flower.FlowerPrice = obj.FlowerPrice.Value;
+
+                await _dbcontext.SaveChangesAsync();
+                return Ok(Flower);
+            }
+        }
+
 
         [HttpDelete]
         [Route("DeleteFlowerBy{FlowerId}")]

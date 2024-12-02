@@ -4,6 +4,7 @@ using Final4.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Final4.Migrations
 {
     [DbContext(typeof(ApplicationDBContext))]
-    partial class ApplicationDBContextModelSnapshot : ModelSnapshot
+    [Migration("20241202110717_changeAvaiToQuantity")]
+    partial class changeAvaiToQuantity
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -91,8 +94,8 @@ namespace Final4.Migrations
                     b.Property<decimal?>("FlowerPrice")
                         .HasColumnType("decimal(18,2)");
 
-                    b.Property<decimal?>("FlowerQuantity")
-                        .HasColumnType("decimal(18,2)");
+                    b.Property<int>("FlowerQuantity")
+                        .HasColumnType("int");
 
                     b.Property<string>("ImgUrl")
                         .IsRequired()
