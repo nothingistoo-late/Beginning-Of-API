@@ -1,6 +1,5 @@
 ﻿using Final4.Data;
 using Microsoft.EntityFrameworkCore;
-using Final4.Controllers;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;

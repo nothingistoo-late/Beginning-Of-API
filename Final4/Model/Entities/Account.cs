@@ -16,6 +16,7 @@ namespace Final4.Model.Entities
         public required string Email { get; set; }
         public required string Password { get; set; }
         public required string RoleID { get; set; }
+        public ICollection<Order> Orders { get; set; }  // Một User có nhiều Order
 
     }
 

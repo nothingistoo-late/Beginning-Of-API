@@ -10,5 +10,26 @@ namespace Final4.Data
         public DbSet<Employee> Employees { get; set; }
         public DbSet<Account> Accounts { get; set; }
         public DbSet<Flower> Flowers { get; set; }   
+        public DbSet<Order> Orders { get; set; }
+        public DbSet<OrderDetail> OrderDetails { get; set; }
+
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            // Đặt khóa chính tổng hợp cho bảng OrderDetail (kết hợp OrderId và FlowerId)
+            modelBuilder.Entity<OrderDetail>()
+                .HasKey(od => new { od.OrderId, od.FlowerId });
+
+            // Cấu hình mối quan hệ giữa OrderDetail và Order
+            modelBuilder.Entity<OrderDetail>()
+                .HasOne(od => od.Order)
+                .WithMany(o => o.OrderDetails)
+                .HasForeignKey(od => od.OrderId);
+
+            // Cấu hình mối quan hệ giữa OrderDetail và Flower
+            modelBuilder.Entity<OrderDetail>()
+                .HasOne(od => od.Flower)
+                .WithMany(f => f.OrderDetail)
+                .HasForeignKey(od => od.FlowerId);
+        }
     }
 }
