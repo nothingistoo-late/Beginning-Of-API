@@ -61,7 +61,6 @@ namespace Final4.Controllers
                 var issuer = jwtConfig["Issuer"];
                 var audience = jwtConfig["Audience"];
                 var key = jwtConfig["Key"];
-                var expirationMinutes = int.Parse(jwtConfig["TokenValidityMins"]);
 
                 // Tạo các claim (ví dụ Role)
                 var claims = new[]
@@ -75,12 +74,10 @@ namespace Final4.Controllers
                 var securityKey = new SymmetricSecurityKey(keyByteArray);
                 var credentials = new SigningCredentials(securityKey, SecurityAlgorithms.HmacSha256);
 
-                var expiration = DateTime.UtcNow.AddMinutes(expirationMinutes);
 
                 var tokenDescriptor = new SecurityTokenDescriptor
                 {
                     Subject = new ClaimsIdentity(claims),
-                    Expires = expiration,
                     Issuer = issuer,
                     Audience = audience,
                     SigningCredentials = credentials
@@ -89,14 +86,13 @@ namespace Final4.Controllers
                 var tokenHandler = new JwtSecurityTokenHandler();
                 var token = tokenHandler.CreateToken(tokenDescriptor);
 
-                // Trả về token và thời gian hết hạn
+                // Trả về token
                 var response = new
                 {
                     Token = tokenHandler.WriteToken(token),
-                    Expiration = expiration
                 };
 
-                return Ok(response);  // Trả về token và thời gian hết hạn
+                return Ok(response);  // Trả về token 
             }
             else
             {
@@ -122,10 +118,6 @@ namespace Final4.Controllers
         [Route("GetAllAccount")]
         public async Task<IActionResult> GetAccount()
         {
-            // Kiểm tra xem người dùng có vai trò 'Admin' không
-            if (!User.IsInRole("Admin"))
-                return Unauthorized("You are not authorized to access this resource.");
-            else
                 return Ok(await _dbContext.Accounts.ToListAsync());
         }
         [HttpPut]

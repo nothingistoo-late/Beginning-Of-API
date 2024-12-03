@@ -47,7 +47,7 @@ namespace Final4.Migrations
 
                     b.HasKey("AccountId");
 
-                    b.ToTable("Accounts");
+                    b.ToTable("Accounts", (string)null);
                 });
 
             modelBuilder.Entity("Final4.Model.Entities.Employee", b =>
@@ -70,7 +70,7 @@ namespace Final4.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Employees");
+                    b.ToTable("Employees", (string)null);
                 });
 
             modelBuilder.Entity("Final4.Model.Entities.Flower", b =>
@@ -100,7 +100,7 @@ namespace Final4.Migrations
 
                     b.HasKey("FlowerId");
 
-                    b.ToTable("Flowers");
+                    b.ToTable("Flowers", (string)null);
                 });
 
             modelBuilder.Entity("Final4.Model.Entities.Order", b =>
@@ -122,7 +122,7 @@ namespace Final4.Migrations
 
                     b.HasIndex("AccountId");
 
-                    b.ToTable("Orders");
+                    b.ToTable("Orders", (string)null);
                 });
 
             modelBuilder.Entity("Final4.Model.Entities.OrderDetail", b =>
@@ -143,7 +143,7 @@ namespace Final4.Migrations
 
                     b.HasIndex("FlowerId");
 
-                    b.ToTable("OrderDetails");
+                    b.ToTable("OrderDetails", (string)null);
                 });
 
             modelBuilder.Entity("Final4.Model.Entities.Order", b =>

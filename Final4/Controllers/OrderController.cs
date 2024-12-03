@@ -31,7 +31,6 @@ namespace Final4.Controllers
                                  {
                                      OrderId = o.OrderId,
                                      OrderName = o.OrderName,
-                                     AccountId = o.AccountId,
                                      AccountName = o.Account.AccountName,
                                      AccountGmail = o.Account.AccountEmail
                                  })
@@ -76,6 +75,36 @@ namespace Final4.Controllers
                 return NotFound("Account không tồn tại.");
             }
             return Ok(obj);
+        }
+
+        [HttpDelete]
+        [Route("DeleteOrderBy{id}")]
+        public async Task<IActionResult> DeleteOrderById(int id)
+        {
+            Order? o = await _dbContext.Orders.FirstOrDefaultAsync(o=> o.OrderId == id);
+
+            if (o != null)
+            {
+                _dbContext.Orders.Remove(o);
+                await _dbContext.SaveChangesAsync();
+                return Ok("Deleted!!");
+            }
+            return NotFound("Not Found Order With OrderId = " + id);
+        }
+
+        [HttpPut]
+        [Route("UpdateOrderBy{id}")]
+        public async Task<IActionResult> UpdateOrderById(int id,UpdateOrder obj)
+        {
+            Order? o = await _dbContext.Orders.FirstOrDefaultAsync(o => o.OrderId == id);
+            if (o != null)
+            {
+                if (!string.IsNullOrEmpty(obj.OrderName))
+                    o.OrderName = obj.OrderName;
+                await _dbContext.SaveChangesAsync();
+                return Ok(obj);
+            }
+            return NotFound("Not Found Order With OrderId = " + id);
         }
     }
 }
