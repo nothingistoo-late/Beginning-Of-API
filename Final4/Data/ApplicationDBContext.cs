@@ -5,6 +5,7 @@ namespace Final4.Data
 {
     public class ApplicationDBContext : DbContext
     {
+
         public ApplicationDBContext(DbContextOptions options): base(options) { }
 
         public DbSet<Employee> Employees { get; set; }
@@ -30,6 +31,8 @@ namespace Final4.Data
                 .HasOne(od => od.Flower)
                 .WithMany(f => f.OrderDetail)
                 .HasForeignKey(od => od.FlowerId);
+
         }
+
     }
 }

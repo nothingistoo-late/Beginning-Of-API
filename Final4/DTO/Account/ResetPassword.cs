@@ -3,6 +3,6 @@
     public class ResetPassword
     {
         public string NewPassword { get; set; }
-        public string ConfirmPassword { get; set; }
+        public required string ConfirmPassword { get; set; }
     }
 }

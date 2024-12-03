@@ -32,14 +32,14 @@ namespace Final4.Controllers
         public async Task<IActionResult> RegisterUserAccount(RegisterUserAccount obj)
         {
             var listUser = _dbContext.Accounts.ToList();
-            if (listUser.Any(x => x.Email == obj.Email))
+            if (listUser.Any(x => x.AccountEmail == obj.Email))
                 return BadRequest("Exited Gmail, Please Prove Another Gmail Or Click The Forgot Password Button ");
             var AccountEntity = new Account()
             {
-                Name = obj.Name,
-                Email = obj.Email,
-                Password = obj.Password,
-                RoleID = "User"
+                AccountName = obj.Name,
+                AccountEmail = obj.Email,
+                AccountPassword = obj.Password,
+                AccountRoleID = "User"
             };
             _dbContext.Accounts.Add(AccountEntity);
             _dbContext.SaveChanges();
@@ -52,7 +52,7 @@ namespace Final4.Controllers
         public async Task<IActionResult> Login(LoginUserAccount obj)
         {
             var listUser = await _dbContext.Accounts.ToListAsync();
-            var checkAccountExits = listUser.FirstOrDefault(x => x.Email == obj.Email && x.Password == obj.Password);
+            var checkAccountExits = listUser.FirstOrDefault(x => x.AccountEmail == obj.Email && x.AccountPassword == obj.Password);
 
             if (checkAccountExits != null)
             {
@@ -66,8 +66,8 @@ namespace Final4.Controllers
                 // Tạo các claim (ví dụ Role)
                 var claims = new[]
                 {
-                    new Claim(ClaimTypes.Email, checkAccountExits.Email),
-                    new Claim(ClaimTypes.Role, checkAccountExits.RoleID)  // Thêm role vào claim
+                    new Claim(ClaimTypes.Email, checkAccountExits.AccountEmail),
+                    new Claim(ClaimTypes.Role, checkAccountExits.AccountRoleID)  // Thêm role vào claim
                 };
 
                 // Tạo token
@@ -109,7 +109,7 @@ namespace Final4.Controllers
         [Route("DeleteUserBy{id}")]
         public async Task<IActionResult> DeleteUserByID(int id)
         {
-            var user = await _dbContext.Accounts.FirstOrDefaultAsync(a => a.Id == id);
+            var user = await _dbContext.Accounts.FirstOrDefaultAsync(a => a.AccountId == id);
             if (user == null)
                 return BadRequest("InValid User");
             _dbContext.Remove(user);
@@ -133,12 +133,12 @@ namespace Final4.Controllers
         public async Task<IActionResult> FogetPassword(string email, ResetPassword obj)
         {
             var listUser = await _dbContext.Accounts.ToListAsync();
-            var checkAccountExits = listUser.FirstOrDefault(x => x.Email == email);
+            var checkAccountExits = listUser.FirstOrDefault(x => x.AccountEmail == email);
             if (checkAccountExits == null)
                 return BadRequest("Unvalid Email, Check Email And Try Again!!!");
             if (obj.NewPassword.Equals(obj.ConfirmPassword))
             {
-                checkAccountExits.Password = obj.ConfirmPassword;
+                checkAccountExits.AccountPassword = obj.ConfirmPassword;
                 await _dbContext.SaveChangesAsync();
                 await _emailService.SendEmailAsync(email, "Reset Password Succesfully", "Your Password Has Been Changed, Your New Password Is " + obj.ConfirmPassword);
                 return Ok("Updated Completed");

@@ -25,30 +25,55 @@ namespace Final4.Controllers
         [Route("GetAllOrder")]
         public async Task<IActionResult> GetAllOrder()
         {
-            return Ok(await _dbContext.Orders.ToListAsync());
+            return Ok(await _dbContext.Orders
+                                 .Include(o => o.Account)
+                                 .Select(o => new GetAllOrder
+                                 {
+                                     OrderId = o.OrderId,
+                                     OrderName = o.OrderName,
+                                     AccountId = o.AccountId,
+                                     AccountName = o.Account.AccountName,
+                                     AccountGmail = o.Account.AccountEmail
+                                 })
+                                 .ToListAsync());
+            // return Ok(await _dbContext.Orders.Include(o=>o.Account.AccountEmail).ToListAsync());
         }
+        [HttpGet]
+        [Route("GetOrderByGmail{Gmail}")]
+        public async Task<IActionResult> GetOrderByEmail(string Gmail)
+        {
+            var orders = await _dbContext.Orders
+                              .Where(o => o.Account != null && o.Account.AccountEmail.ToLower() == Gmail.ToLower()) // Kiểm tra trước khi truy cập
+                              .Include(o => o.Account) // Bao gồm dữ liệu Account liên quan
+                              .Select(o => new GetOrderByGmail
+                              {
+                                  OrderId = o.OrderId,
+                                  OrderName = o.OrderName,
+                                  AccountGmail = o.Account.AccountEmail
+                              })
+                              .ToListAsync();
 
+            return Ok(orders);
+        }
         [HttpPost]
         [Route("AddOrder")]
         public async Task<ActionResult> AddOrder(AddOrder obj)
         {
-            var account = await _dbContext.Accounts.FirstOrDefaultAsync(x => x.Email == obj.UserEmail);
+            var account = await _dbContext.Accounts.FirstOrDefaultAsync(x => x.AccountEmail.ToLower() == obj.UserEmail.ToLower());
             if (account != null)  // Kiểm tra nếu account không phải là null
             {
-                var orderEntity = new Order
+                var orderEntity = new Order()
                 {
-                    OrderName = obj.OrderName,
-                    UserId = account.Id  // Lấy UserId từ account
+                    Account = account,
+                    OrderName = obj.OrderName,  
                 };
-
-                // Tiến hành lưu Order nếu cần
                 await _dbContext.Orders.AddAsync(orderEntity);
                 await _dbContext.SaveChangesAsync();
             }
             else
             {
                 // Xử lý khi không tìm thấy account (ví dụ: trả về lỗi hoặc thông báo)
-                throw new Exception("Account không tồn tại.");
+                return NotFound("Account không tồn tại.");
             }
             return Ok(obj);
         }

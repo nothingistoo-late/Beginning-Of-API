@@ -11,12 +11,12 @@ namespace Final4.Model.Entities
     {
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        public int Id { get; set; }
-        public string? Name { get; set; }
-        public required string Email { get; set; }
-        public required string Password { get; set; }
-        public required string RoleID { get; set; }
-        public ICollection<Order> Orders { get; set; }  // Một User có nhiều Order
+        public int AccountId { get; set; }
+        public string? AccountName { get; set; }
+        public required string AccountEmail { get; set; }
+        public required string AccountPassword { get; set; }
+        public required string AccountRoleID { get; set; }
+        public virtual ICollection<Order> Orders { get; set; } = new List<Order>(); // Một User có nhiều Order
 
     }
 

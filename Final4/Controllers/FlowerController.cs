@@ -26,7 +26,7 @@ namespace Final4.Controllers
         }
 
         [HttpGet]
-        [Route("GetAllFlowerBy{FlowerName}")]
+        [Route("GetAllFlowerByFlowerName/{FlowerName}")]
         public async Task<IActionResult> GetFlowerByName(string FlowerName)
         {
             var flowers = await _dbcontext.Flowers
@@ -46,7 +46,7 @@ namespace Final4.Controllers
                  FlowerDescription = obj.FlowerDescription,
                  FlowerQuantity = obj.FlowerQuantity,
                  FlowerPrice = obj.FlowerPrice,
-                 ImgUrl = obj.ImgUrl
+                 FlowerImgUrl = obj.ImgUrl
              };
 
             _dbcontext.Flowers.Add(flower);
@@ -54,7 +54,7 @@ namespace Final4.Controllers
             return Ok(flower);
         }
         [HttpPost]
-        [Route("UpdateFlowerBy{id}")]
+        [Route("UpdateFlowerById/{id}")]
         public async Task<IActionResult> UpdateFlower(int id, UpdateFlower obj)
         {
             Flower? Flower = await _dbcontext.Flowers.FindAsync(id);
@@ -70,7 +70,7 @@ namespace Final4.Controllers
                     Flower.FlowerDescription = obj.FlowerDescription;
 
                 if (!string.IsNullOrEmpty(obj.ImgUrl))
-                    Flower.ImgUrl = obj.ImgUrl;
+                    Flower.FlowerImgUrl = obj.ImgUrl;
 
                 if (obj.FlowerQuantity.HasValue)
                     Flower.FlowerQuantity = obj.FlowerQuantity.Value;
@@ -85,7 +85,7 @@ namespace Final4.Controllers
 
 
         [HttpDelete]
-        [Route("DeleteFlowerBy{FlowerId}")]
+        [Route("DeleteFlowerByFlowerId/{FlowerId}")]
         public async Task<IActionResult> DeleteFlower(int FlowerId)
         {
             var flower = await _dbcontext.Flowers.FirstOrDefaultAsync(x => x.FlowerId == FlowerId);

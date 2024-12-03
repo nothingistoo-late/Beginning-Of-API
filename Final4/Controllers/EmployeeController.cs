@@ -50,7 +50,7 @@ namespace Final4.Controllers
         }
 
         [HttpPut]
-        [Route("UpdateEmployeeBy{id}")]
+        [Route("UpdateEmployeeById/{id}")]
         public async Task<IActionResult> UpdateEmployee(Guid id, UpdateEmployee obj)
         {
             var existingEmployee = await _dbContext.Employees.FindAsync(id);

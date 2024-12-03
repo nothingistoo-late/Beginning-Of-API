@@ -77,6 +77,11 @@ builder.Services.AddAuthorization(options =>
         policy.RequireRole("Staff"));
 });
 builder.Services.AddSingleton<EmailService>();
+//builder.Services.AddControllers()
+//    .AddJsonOptions(options =>
+//    {
+//        options.JsonSerializerOptions.ReferenceHandler = System.Text.Json.Serialization.ReferenceHandler.Preserve;
+//    });
 
 var app = builder.Build();
 
