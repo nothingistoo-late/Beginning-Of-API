@@ -4,6 +4,7 @@ using Final4.Model.Entities;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
 
 namespace Final4.Controllers
 {
@@ -52,7 +53,8 @@ namespace Final4.Controllers
                                   AccountGmail = o.Account.AccountEmail
                               })
                               .ToListAsync();
-
+            if (orders.IsNullOrEmpty())
+                return NotFound();
             return Ok(orders);
         }
         [HttpPost]
