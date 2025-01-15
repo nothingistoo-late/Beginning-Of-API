@@ -22,6 +22,32 @@ namespace Final4.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
+            modelBuilder.Entity("CartItem", b =>
+                {
+                    b.Property<int>("CartItemId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("CartItemId"));
+
+                    b.Property<int>("CartId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("FlowerId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("Quantity")
+                        .HasColumnType("int");
+
+                    b.HasKey("CartItemId");
+
+                    b.HasIndex("CartId");
+
+                    b.HasIndex("FlowerId");
+
+                    b.ToTable("CartItems");
+                });
+
             modelBuilder.Entity("Final4.Model.Entities.Account", b =>
                 {
                     b.Property<int>("AccountId")
@@ -48,6 +74,24 @@ namespace Final4.Migrations
                     b.HasKey("AccountId");
 
                     b.ToTable("Accounts");
+                });
+
+            modelBuilder.Entity("Final4.Model.Entities.Cart", b =>
+                {
+                    b.Property<int>("CartId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("CartId"));
+
+                    b.Property<int>("AccountId")
+                        .HasColumnType("int");
+
+                    b.HasKey("CartId");
+
+                    b.HasIndex("AccountId");
+
+                    b.ToTable("Carts");
                 });
 
             modelBuilder.Entity("Final4.Model.Entities.Employee", b =>
@@ -118,6 +162,10 @@ namespace Final4.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<string>("OrderStatus")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
                     b.HasKey("OrderId");
 
                     b.HasIndex("AccountId");
@@ -144,6 +192,36 @@ namespace Final4.Migrations
                     b.HasIndex("FlowerId");
 
                     b.ToTable("OrderDetails");
+                });
+
+            modelBuilder.Entity("CartItem", b =>
+                {
+                    b.HasOne("Final4.Model.Entities.Cart", "Cart")
+                        .WithMany("CartItems")
+                        .HasForeignKey("CartId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Final4.Model.Entities.Flower", "Flower")
+                        .WithMany()
+                        .HasForeignKey("FlowerId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Cart");
+
+                    b.Navigation("Flower");
+                });
+
+            modelBuilder.Entity("Final4.Model.Entities.Cart", b =>
+                {
+                    b.HasOne("Final4.Model.Entities.Account", "Account")
+                        .WithMany()
+                        .HasForeignKey("AccountId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Account");
                 });
 
             modelBuilder.Entity("Final4.Model.Entities.Order", b =>
@@ -179,6 +257,11 @@ namespace Final4.Migrations
             modelBuilder.Entity("Final4.Model.Entities.Account", b =>
                 {
                     b.Navigation("Orders");
+                });
+
+            modelBuilder.Entity("Final4.Model.Entities.Cart", b =>
+                {
+                    b.Navigation("CartItems");
                 });
 
             modelBuilder.Entity("Final4.Model.Entities.Flower", b =>

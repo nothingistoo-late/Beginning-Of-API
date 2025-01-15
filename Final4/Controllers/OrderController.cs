@@ -79,5 +79,105 @@ namespace Final4.Controllers
             }
             return Ok(obj);
         }
+
+        [HttpDelete]
+        [Route("DeleteOrderByOrderId{id}")]
+        public async Task<IActionResult> DeleteORderByOrderId(int id)
+        {
+            // Lấy thông tin Order từ cơ sở dữ liệu
+
+            var order = await _dbContext.Orders.FirstOrDefaultAsync(o => o.OrderId == id);
+            if (order== null) 
+                return NotFound();
+
+            // Lấy AccountId của người dùng hiện tại từ thông tin xác thực
+            var userAccountId = User.Claims.FirstOrDefault(c => c.Type == "AccountId")?.Value;
+
+            if (userAccountId == null || userAccountId != order.AccountId.ToString())
+                return Unauthorized("You are not authorized to delete this order");
+
+            _dbContext.Orders.Remove(order);
+            await _dbContext.SaveChangesAsync();
+            return Ok();
+        }
+
+        [HttpPost]
+        [Route("Checkout")]
+        public async Task<IActionResult> Checkout([FromBody] CheckoutRequest request)
+        {
+            // Lấy AccountId từ token (JWT)
+            var accountIdClaim = User.Claims.FirstOrDefault(c => c.Type == "AccountId")?.Value;
+            if (accountIdClaim == null)
+            {
+                return Unauthorized("AccountId is missing from the token.");
+            }
+            int accountId = int.Parse(accountIdClaim);
+
+            // Kiểm tra giỏ hàng có tồn tại không
+            var cart = await _dbContext.Carts
+                                       .Include(c => c.CartItems)
+                                       .ThenInclude(ci => ci.Flower)
+                                       .FirstOrDefaultAsync(c => c.AccountId == accountId);
+
+            if (cart == null || !cart.CartItems.Any())
+            {
+                return BadRequest("Your cart is empty.");
+            }
+
+            // Tạo đơn hàng mới
+            var order = new Order()
+            {
+                AccountId = accountId,
+                OrderName = request.OrderName ?? "Order from Cart",  // Tên đơn hàng (có thể từ request)
+                OrderStatus = "Pending",  // Trạng thái ban đầu là Pending
+                OrderDetails = new List<OrderDetail>()
+            };
+
+            foreach (var cartItem in cart.CartItems)
+            {
+                // Kiểm tra số lượng hoa trong kho
+                if (cartItem.Quantity > cartItem.Flower.FlowerQuantity)
+                {
+                    return BadRequest($"Not enough stock for {cartItem.Flower.FlowerName}");
+                }
+
+                // Tạo chi tiết đơn hàng
+                var orderDetail = new OrderDetail
+                {
+                    FlowerId = cartItem.FlowerId,
+                    Quantity = cartItem.Quantity,
+                    Note = cartItem.Flower.FlowerDescription  // Có thể lưu mô tả hoa (nếu cần)
+                };
+
+                // Thêm chi tiết đơn hàng vào đơn hàng
+                order.OrderDetails.Add(orderDetail);
+
+                // Cập nhật số lượng hoa trong kho
+                cartItem.Flower.FlowerQuantity -= cartItem.Quantity;
+            }
+
+
+            // Thêm đơn hàng vào cơ sở dữ liệu
+            await _dbContext.Orders.AddAsync(order);
+            await _dbContext.SaveChangesAsync();
+
+            string body = _emailService.GenerateOrderEmailBody(order);
+            var listUser = await _dbContext.Accounts.ToListAsync();
+            Account account = listUser.FirstOrDefault(o => o.AccountId == accountId);
+            await _emailService.SendEmailAsync(account.AccountEmail, "Purche Successfully", body);
+
+            // Xóa các sản phẩm trong giỏ hàng sau khi tạo đơn hàng
+            _dbContext.CartItems.RemoveRange(cart.CartItems);
+            await _dbContext.SaveChangesAsync();
+
+            // Lấy tất cả các bản ghi trong bảng Carts và xóa chúng
+            _dbContext.Carts.RemoveRange(_dbContext.Carts.ToList());
+            _dbContext.SaveChanges();
+
+
+            return Ok(order);
+        }
+
+
     }
 }

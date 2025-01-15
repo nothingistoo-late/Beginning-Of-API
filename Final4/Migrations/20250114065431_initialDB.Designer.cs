@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Final4.Migrations
 {
     [DbContext(typeof(ApplicationDBContext))]
-    [Migration("20241202110717_changeAvaiToQuantity")]
-    partial class changeAvaiToQuantity
+    [Migration("20250114065431_initialDB")]
+    partial class initialDB
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -25,32 +25,76 @@ namespace Final4.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
-            modelBuilder.Entity("Final4.Model.Entities.Account", b =>
+            modelBuilder.Entity("CartItem", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<int>("CartItemId")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("CartItemId"));
 
-                    b.Property<string>("Email")
+                    b.Property<int>("CartId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("FlowerId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("Quantity")
+                        .HasColumnType("int");
+
+                    b.HasKey("CartItemId");
+
+                    b.HasIndex("CartId");
+
+                    b.HasIndex("FlowerId");
+
+                    b.ToTable("CartItems");
+                });
+
+            modelBuilder.Entity("Final4.Model.Entities.Account", b =>
+                {
+                    b.Property<int>("AccountId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("AccountId"));
+
+                    b.Property<string>("AccountEmail")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("Name")
+                    b.Property<string>("AccountName")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("Password")
+                    b.Property<string>("AccountPassword")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("RoleID")
+                    b.Property<string>("AccountRoleID")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.HasKey("Id");
+                    b.HasKey("AccountId");
 
                     b.ToTable("Accounts");
+                });
+
+            modelBuilder.Entity("Final4.Model.Entities.Cart", b =>
+                {
+                    b.Property<int>("CartId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("CartId"));
+
+                    b.Property<int>("AccountId")
+                        .HasColumnType("int");
+
+                    b.HasKey("CartId");
+
+                    b.HasIndex("AccountId");
+
+                    b.ToTable("Carts");
                 });
 
             modelBuilder.Entity("Final4.Model.Entities.Employee", b =>
@@ -87,19 +131,19 @@ namespace Final4.Migrations
                     b.Property<string>("FlowerDescription")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<string>("FlowerImgUrl")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("FlowerName")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<decimal?>("FlowerPrice")
+                    b.Property<decimal>("FlowerPrice")
                         .HasColumnType("decimal(18,2)");
 
-                    b.Property<int>("FlowerQuantity")
-                        .HasColumnType("int");
-
-                    b.Property<string>("ImgUrl")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<decimal>("FlowerQuantity")
+                        .HasColumnType("decimal(18,2)");
 
                     b.HasKey("FlowerId");
 
@@ -114,16 +158,20 @@ namespace Final4.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("OrderId"));
 
+                    b.Property<int>("AccountId")
+                        .HasColumnType("int");
+
                     b.Property<string>("OrderName")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("UserId")
-                        .HasColumnType("int");
+                    b.Property<string>("OrderStatus")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.HasKey("OrderId");
 
-                    b.HasIndex("UserId");
+                    b.HasIndex("AccountId");
 
                     b.ToTable("Orders");
                 });
@@ -137,7 +185,6 @@ namespace Final4.Migrations
                         .HasColumnType("int");
 
                     b.Property<string>("Note")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<int>("Quantity")
@@ -150,15 +197,45 @@ namespace Final4.Migrations
                     b.ToTable("OrderDetails");
                 });
 
-            modelBuilder.Entity("Final4.Model.Entities.Order", b =>
+            modelBuilder.Entity("CartItem", b =>
                 {
-                    b.HasOne("Final4.Model.Entities.Account", "User")
-                        .WithMany("Orders")
-                        .HasForeignKey("UserId")
+                    b.HasOne("Final4.Model.Entities.Cart", "Cart")
+                        .WithMany("CartItems")
+                        .HasForeignKey("CartId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("User");
+                    b.HasOne("Final4.Model.Entities.Flower", "Flower")
+                        .WithMany()
+                        .HasForeignKey("FlowerId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Cart");
+
+                    b.Navigation("Flower");
+                });
+
+            modelBuilder.Entity("Final4.Model.Entities.Cart", b =>
+                {
+                    b.HasOne("Final4.Model.Entities.Account", "Account")
+                        .WithMany()
+                        .HasForeignKey("AccountId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Account");
+                });
+
+            modelBuilder.Entity("Final4.Model.Entities.Order", b =>
+                {
+                    b.HasOne("Final4.Model.Entities.Account", "Account")
+                        .WithMany("Orders")
+                        .HasForeignKey("AccountId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Account");
                 });
 
             modelBuilder.Entity("Final4.Model.Entities.OrderDetail", b =>
@@ -183,6 +260,11 @@ namespace Final4.Migrations
             modelBuilder.Entity("Final4.Model.Entities.Account", b =>
                 {
                     b.Navigation("Orders");
+                });
+
+            modelBuilder.Entity("Final4.Model.Entities.Cart", b =>
+                {
+                    b.Navigation("CartItems");
                 });
 
             modelBuilder.Entity("Final4.Model.Entities.Flower", b =>

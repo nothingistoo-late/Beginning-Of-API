@@ -47,62 +47,64 @@ namespace Final4.Controllers
             return Ok(obj);
         }
 
-        [HttpPost]
-        [Route("Login")]
-        public async Task<IActionResult> Login(LoginUserAccount obj)
-        {
-            var listUser = await _dbContext.Accounts.ToListAsync();
-            var checkAccountExits = listUser.FirstOrDefault(x => x.AccountEmail == obj.Email && x.AccountPassword == obj.Password);
-
-            if (checkAccountExits != null)
+            [HttpPost]
+            [Route("Login")]
+            public async Task<IActionResult> Login(LoginUserAccount obj)
             {
-                // Lấy thông tin từ appsettings
-                var jwtConfig = _configuration.GetSection("JwtConfig");
-                var issuer = jwtConfig["Issuer"];
-                var audience = jwtConfig["Audience"];
-                var key = jwtConfig["Key"];
-                var expirationMinutes = int.Parse(jwtConfig["TokenValidityMins"]);
+                var listUser = await _dbContext.Accounts.ToListAsync();
+                var checkAccountExits = listUser.FirstOrDefault(x => x.AccountEmail == obj.Email && x.AccountPassword == obj.Password);
 
-                // Tạo các claim (ví dụ Role)
-                var claims = new[]
+                if (checkAccountExits != null)
                 {
-                    new Claim(ClaimTypes.Email, checkAccountExits.AccountEmail),
-                    new Claim(ClaimTypes.Role, checkAccountExits.AccountRoleID)  // Thêm role vào claim
-                };
+                    // Lấy thông tin từ appsettings
+                    var jwtConfig = _configuration.GetSection("JwtConfig");
+                    var issuer = jwtConfig["Issuer"];
+                    var audience = jwtConfig["Audience"];
+                    var key = jwtConfig["Key"];
+                    var expirationMinutes = int.Parse(jwtConfig["TokenValidityMins"]);
 
-                // Tạo token
-                var keyByteArray = Encoding.UTF8.GetBytes(key);
-                var securityKey = new SymmetricSecurityKey(keyByteArray);
-                var credentials = new SigningCredentials(securityKey, SecurityAlgorithms.HmacSha256);
+                    // Tạo các claim (ví dụ Role)
+                    var claims = new[]
+                    {
+                        new Claim(ClaimTypes.Email, checkAccountExits.AccountEmail),
+                        new Claim(ClaimTypes.Role, checkAccountExits.AccountRoleID),  // Thêm role vào claim
+                        new Claim("AccountId", checkAccountExits.AccountId.ToString()) // Thêm AccountId
 
-                var expiration = DateTime.UtcNow.AddMinutes(expirationMinutes);
+                    };
 
-                var tokenDescriptor = new SecurityTokenDescriptor
+                    // Tạo token
+                    var keyByteArray = Encoding.UTF8.GetBytes(key);
+                    var securityKey = new SymmetricSecurityKey(keyByteArray);
+                    var credentials = new SigningCredentials(securityKey, SecurityAlgorithms.HmacSha256);
+
+                    var expiration = DateTime.UtcNow.AddMinutes(expirationMinutes);
+
+                    var tokenDescriptor = new SecurityTokenDescriptor
+                    {
+                        Subject = new ClaimsIdentity(claims),
+                        Expires = expiration,
+                        Issuer = issuer,
+                        Audience = audience,
+                        SigningCredentials = credentials
+                    };
+
+                    var tokenHandler = new JwtSecurityTokenHandler();
+                    var token = tokenHandler.CreateToken(tokenDescriptor);
+
+                    // Trả về token và thời gian hết hạn
+                    var response = new
+                    {
+                        Token = tokenHandler.WriteToken(token),
+                        Expiration = expiration
+                    };
+
+                    return Ok(response);  // Trả về token và thời gian hết hạn
+                }
+                else
                 {
-                    Subject = new ClaimsIdentity(claims),
-                    Expires = expiration,
-                    Issuer = issuer,
-                    Audience = audience,
-                    SigningCredentials = credentials
-                };
-
-                var tokenHandler = new JwtSecurityTokenHandler();
-                var token = tokenHandler.CreateToken(tokenDescriptor);
-
-                // Trả về token và thời gian hết hạn
-                var response = new
-                {
-                    Token = tokenHandler.WriteToken(token),
-                    Expiration = expiration
-                };
-
-                return Ok(response);  // Trả về token và thời gian hết hạn
+                    return Unauthorized("Invalid credentials.");
+                }
             }
-            else
-            {
-                return Unauthorized("Invalid credentials.");
-            }
-        }
 
         [Authorize(Policy = "AdminPolicy")]
         [HttpDelete]
@@ -112,7 +114,7 @@ namespace Final4.Controllers
             var user = await _dbContext.Accounts.FirstOrDefaultAsync(a => a.AccountId == id);
             if (user == null)
                 return BadRequest("InValid User");
-            _dbContext.Remove(user);
+            _dbContext.Accounts.Remove(user);
             await _dbContext.SaveChangesAsync();
             return Ok("Delete Succesfully!!");
         }
@@ -135,12 +137,12 @@ namespace Final4.Controllers
             var listUser = await _dbContext.Accounts.ToListAsync();
             var checkAccountExits = listUser.FirstOrDefault(x => x.AccountEmail == email);
             if (checkAccountExits == null)
-                return BadRequest("Unvalid Email, Check Email And Try Again!!!");
+                return BadRequest("Invalid Email, Check Email And Try Again!!!");
             if (obj.NewPassword.Equals(obj.ConfirmPassword))
             {
                 checkAccountExits.AccountPassword = obj.ConfirmPassword;
                 await _dbContext.SaveChangesAsync();
-                await _emailService.SendEmailAsync(email, "Reset Password Succesfully", "Your Password Has Been Changed, Your New Password Is " + obj.ConfirmPassword);
+                await _emailService.SendEmailAsync(email, "Your Password In Final4 Has Reset Succesfully", "Your Password Has Been Changed, Your New Password Is " + obj.ConfirmPassword+"\n Please Change Your Password if this is not done by you");
                 return Ok("Updated Completed");
             }
             else return BadRequest("Confirm Password Doesnt Match New Password");

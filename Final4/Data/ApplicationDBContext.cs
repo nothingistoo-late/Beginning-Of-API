@@ -13,6 +13,8 @@ namespace Final4.Data
         public DbSet<Flower> Flowers { get; set; }   
         public DbSet<Order> Orders { get; set; }
         public DbSet<OrderDetail> OrderDetails { get; set; }
+        public DbSet<Cart> Carts { get; set; }
+        public DbSet<CartItem> CartItems { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -26,11 +28,11 @@ namespace Final4.Data
                 .WithMany(o => o.OrderDetails)
                 .HasForeignKey(od => od.OrderId);
 
-            // Cấu hình mối quan hệ giữa OrderDetail và Flower
-            modelBuilder.Entity<OrderDetail>()
-                .HasOne(od => od.Flower)
-                .WithMany(f => f.OrderDetail)
-                .HasForeignKey(od => od.FlowerId);
+            //// Cấu hình mối quan hệ giữa OrderDetail và Flower
+            //modelBuilder.Entity<OrderDetail>()
+            //    .HasOne(od => od.Flower)
+            //    .WithMany(f => f.OrderDetail)
+            //    .HasForeignKey(od => od.FlowerId);
 
         }
 

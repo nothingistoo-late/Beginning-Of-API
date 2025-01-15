@@ -4,6 +4,7 @@ using Final4.Data;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.OpenApi;
 using Microsoft.EntityFrameworkCore;
+using System.Text.Json.Serialization;
 
 namespace Final4.Model.Entities
 {
@@ -16,6 +17,7 @@ namespace Final4.Model.Entities
         public required string AccountEmail { get; set; }
         public required string AccountPassword { get; set; }
         public required string AccountRoleID { get; set; }
+        [JsonIgnore]
         public virtual ICollection<Order> Orders { get; set; } = new List<Order>(); // Một User có nhiều Order
 
     }
