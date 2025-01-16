@@ -175,8 +175,11 @@ namespace Final4.Migrations
 
             modelBuilder.Entity("Final4.Model.Entities.OrderDetail", b =>
                 {
-                    b.Property<int>("OrderId")
+                    b.Property<int>("OrderDetailId")
+                        .ValueGeneratedOnAdd()
                         .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("OrderDetailId"));
 
                     b.Property<int>("FlowerId")
                         .HasColumnType("int");
@@ -184,18 +187,17 @@ namespace Final4.Migrations
                     b.Property<string>("Note")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("OrderDetailId")
-                        .ValueGeneratedOnAdd()
+                    b.Property<int>("OrderId")
                         .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("OrderDetailId"));
 
                     b.Property<int>("Quantity")
                         .HasColumnType("int");
 
-                    b.HasKey("OrderId", "FlowerId");
+                    b.HasKey("OrderDetailId");
 
                     b.HasIndex("FlowerId");
+
+                    b.HasIndex("OrderId");
 
                     b.ToTable("OrderDetails");
                 });
@@ -211,13 +213,7 @@ namespace Final4.Migrations
                     b.Property<string>("Comment")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("OrderDetailFlowerId")
-                        .HasColumnType("int");
-
                     b.Property<int>("OrderDetailId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("OrderDetailOrderId")
                         .HasColumnType("int");
 
                     b.Property<int>("RatingValue")
@@ -225,7 +221,7 @@ namespace Final4.Migrations
 
                     b.HasKey("RatingId");
 
-                    b.HasIndex("OrderDetailOrderId", "OrderDetailFlowerId");
+                    b.HasIndex("OrderDetailId");
 
                     b.ToTable("Ratings");
                 });
@@ -294,7 +290,7 @@ namespace Final4.Migrations
                 {
                     b.HasOne("Final4.Model.Entities.OrderDetail", "OrderDetail")
                         .WithMany("Ratings")
-                        .HasForeignKey("OrderDetailOrderId", "OrderDetailFlowerId")
+                        .HasForeignKey("OrderDetailId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 

@@ -13,12 +13,10 @@ namespace Final4.Model.Entities
         [Range(1, 5)]  // Giới hạn rating từ 1 đến 5
         public int RatingValue { get; set; }  // Đánh giá (1 đến 5)
 
-        public string? Comment { get; set; }  // Bình luận (nếu có)
+        public string Comment { get; set; }  // Bình luận (nếu có)
 
-        // Khóa ngoại để liên kết với Order
-        [ForeignKey("OrderDetailId")]
-        public int OrderDetailId { get; set; }  // Khóa ngoại liên kết với Order
+        public int OrderDetailId { get; set; }  // Khóa ngoại liên kết với OrderDetail
         [JsonIgnore]
-        public virtual OrderDetail OrderDetail { get; set; }  // Điều hướng đến Order
+        public virtual OrderDetail OrderDetail { get; set; }  // Điều hướng đến OrderDetail
     }
 }

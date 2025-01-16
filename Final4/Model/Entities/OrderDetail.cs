@@ -8,9 +8,12 @@ namespace Final4.Model.Entities
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int OrderDetailId { get; set; }
+
+        [ForeignKey("Order")]
         public int OrderId { get; set; }      // Khóa ngoại liên kết với Order
         public virtual Order Order { get; set; }     // Điều hướng (navigation property)
 
+        [ForeignKey("Flower")]
         public int FlowerId { get; set; }     // Khóa ngoại liên kết với Flower
         public virtual Flower Flower { get; set; }   // Điều hướng
 
