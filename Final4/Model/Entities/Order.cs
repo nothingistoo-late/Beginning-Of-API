@@ -17,6 +17,8 @@ namespace Final4.Model.Entities
         public virtual Account? Account { get; set; }  // Điều hướng đến User
         [JsonIgnore]
 
-        public virtual ICollection<OrderDetail> OrderDetails { get; set; }  // Mối quan hệ nhiều-nhiều với Flower
+        public virtual ICollection<OrderDetail> OrderDetails { get; set; }  
+        public virtual ICollection<Rating> Ratings { get; set; }  // Mối quan hệ 1-nhiều với Rating
+
     }
 }

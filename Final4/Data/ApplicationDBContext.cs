@@ -16,6 +16,7 @@ namespace Final4.Data
         public DbSet<Cart> Carts { get; set; }
         public DbSet<CartItem> CartItems { get; set; }
 
+        public DbSet<Rating> Ratings { get; set; }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             // Đặt khóa chính tổng hợp cho bảng OrderDetail (kết hợp OrderId và FlowerId)
