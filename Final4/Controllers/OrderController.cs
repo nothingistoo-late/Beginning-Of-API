@@ -68,6 +68,7 @@ namespace Final4.Controllers
                 {
                     Account = account,
                     OrderName = obj.OrderName,  
+                    OrderStatus = obj.OrderStatus
                 };
                 await _dbContext.Orders.AddAsync(orderEntity);
                 await _dbContext.SaveChangesAsync();
@@ -172,7 +173,7 @@ namespace Final4.Controllers
 
             // Lấy tất cả các bản ghi trong bảng Carts và xóa chúng
             _dbContext.Carts.RemoveRange(_dbContext.Carts.ToList());
-            _dbContext.SaveChanges();
+            await _dbContext.SaveChangesAsync();
 
 
             return Ok(order);

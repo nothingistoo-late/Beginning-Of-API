@@ -9,5 +9,7 @@ namespace Final4.DTO.Order
         [EmailAddress(ErrorMessage = "Invalid email address format.")]
         public required string UserEmail { get; set; }  // Khóa ngoại liên kết với User
 
+        public string OrderStatus { get; set; }
+
     }
 }

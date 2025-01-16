@@ -4,6 +4,8 @@ using Final4.Model.Entities;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
+using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 
 namespace Final4.Controllers
 {
@@ -37,21 +39,29 @@ namespace Final4.Controllers
 
         [HttpPost]
         [Route("AddFlower")]
-        public async Task<IActionResult> AddFlower(AddFlower obj)
+        public async Task<IActionResult> AddFlowers(List<AddFlower> flowers)
         {
-            Flower
-             flower = new()
-             {
-                 FlowerName = obj.FlowerName,
-                 FlowerDescription = obj.FlowerDescription,
-                 FlowerQuantity = obj.FlowerQuantity,
-                 FlowerPrice = obj.FlowerPrice,
-                 FlowerImgUrl = obj.ImgUrl
-             };
+            var flowersToAdd = new List<Flower>();
 
-            _dbcontext.Flowers.Add(flower);
+            foreach (var obj in flowers)
+            {
+                var flower = new Flower
+                {
+                    FlowerName = obj.FlowerName,
+                    FlowerDescription = obj.FlowerDescription,
+                    FlowerQuantity = obj.FlowerQuantity,
+                    FlowerPrice = obj.FlowerPrice,
+                    FlowerImgUrl = obj.ImgUrl
+                };
+
+                flowersToAdd.Add(flower);
+            }
+
+            // Thêm tất cả hoa vào cơ sở dữ liệu
+            _dbcontext.Flowers.AddRange(flowersToAdd);
             await _dbcontext.SaveChangesAsync();
-            return Ok(flower);
+
+            return Ok(flowersToAdd);
         }
         [HttpPost]
         [Route("UpdateFlowerById/{id}")]
@@ -96,6 +106,41 @@ namespace Final4.Controllers
             _dbcontext.Flowers.Remove(flower);
             await _dbcontext.SaveChangesAsync();
             return Ok($"Flower with ID {FlowerId} has been deleted successfully.");
+        }
+
+        [HttpGet]
+        [Route("search")]
+        public async Task<IActionResult> SearchFlower(string? name, string? description, decimal? priceFrom, decimal? priceTo, decimal? quantity)
+        {
+            var listFlower = _dbcontext.Flowers.ToList();
+            // Lọc theo tên sản phẩm
+            if (!string.IsNullOrEmpty(name))
+            {
+                listFlower = listFlower.Where(p => p.FlowerName.ToLower().Contains(name.ToLower())).ToList();
+            }
+
+            // Lọc theo danh mục
+            if (!string.IsNullOrEmpty(description))
+            {
+                listFlower = listFlower.Where(p => p.FlowerDescription.ToLower().Contains(description.ToLower())).ToList();
+            }
+
+            // Lọc theo giá thấp nhất (>=)
+            if (priceFrom.HasValue)
+            {
+                listFlower = listFlower.Where(p => p.FlowerPrice >= priceFrom.Value).ToList();
+            }
+
+            // Lọc theo giá cao nhất (<=)
+            if (priceTo.HasValue)
+            {
+                listFlower = listFlower.Where(p => p.FlowerPrice <= priceTo.Value).ToList();
+            }
+
+            if (!listFlower.IsNullOrEmpty())
+                return Ok(listFlower);
+            else
+                return NotFound();
         }
     }
 }

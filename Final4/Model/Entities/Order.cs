@@ -11,6 +11,7 @@ namespace Final4.Model.Entities
         public int OrderId { get; set; }  // Khóa chính
         public required string OrderName { get; set; }
         public string OrderStatus { get; set; }
+
         [ForeignKey("Account")]
         public int AccountId { get; set; }  // Khóa ngoại liên kết với User
         public virtual Account? Account { get; set; }  // Điều hướng đến User
