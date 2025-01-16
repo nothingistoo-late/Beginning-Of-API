@@ -35,10 +35,10 @@ public class EmailService
     public string GenerateOrderEmailBody(Order order)
     {
         var sb = new StringBuilder();
-
+        sb.AppendLine("<h5>Sales Invoice!</h5>");
         sb.AppendLine("<h2>Thank you for your purchase!</h2>");
         sb.AppendLine("<h3>Order Details:</h3>");
-
+        sb.AppendLine("<h1></h1>");
         // Thông tin người dùng
         sb.AppendLine("<p><strong>Order Name:</strong> " + order.OrderName + "</p>");
         sb.AppendLine("<p><strong>Order ID:</strong> " + order.OrderId + "</p>");
@@ -67,9 +67,10 @@ public class EmailService
 
         // Thông báo trạng thái đơn hàng
         sb.AppendLine("<p><strong>Order Status:</strong> " + order.OrderStatus + "</p>");
-
-        sb.AppendLine("<p>If you have any questions, feel free to contact us.</p>");
-        sb.AppendLine("<p>Thank you for shopping with us!</p>");
+        sb.AppendLine("<p><strong>Date:</strong> " + DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + "</p>");
+        sb.AppendLine("<p>If you have any questions, feel free to contact us from out contact 0123456789.</p>");
+        sb.AppendLine("<p>Or contact we from email example@gmail.com</p>");
+        sb.AppendLine("<p>Thank you for shopping with us <3!</p>");
 
         return sb.ToString();
     }

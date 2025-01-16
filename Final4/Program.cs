@@ -4,9 +4,17 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using Microsoft.OpenApi.Models;
+using Final4.Service.Email;
 
 var builder = WebApplication.CreateBuilder(args);
+// Đăng ký EmailQueue
+builder.Services.AddSingleton<EmailQueue>();
 
+// Đăng ký EmailService
+builder.Services.AddScoped<EmailService>();
+
+// Đăng ký Background Service
+builder.Services.AddHostedService<EmailBackgroundService>();
 // Add services to the container.
 
 builder.Services.AddControllers();

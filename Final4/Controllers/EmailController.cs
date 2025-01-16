@@ -1,5 +1,6 @@
 ﻿using Final4.Configuration;
 using Final4.DTO.Email;
+using Final4.Service.Email;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using MimeKit;
@@ -11,10 +12,12 @@ namespace Final4.Controllers
     public class EmailController : ControllerBase
     {
         private readonly EmailService _emailService;
+        private readonly EmailQueue _emailQueue;
 
-        public EmailController(EmailService emailService)
+        public EmailController(EmailService emailService, EmailQueue emailQueue)
         {
             _emailService = emailService;
+            _emailQueue = emailQueue;
         }
 
         [HttpPost("send")]
@@ -25,15 +28,8 @@ namespace Final4.Controllers
                 return BadRequest("Invalid email request.");
             }
 
-            try
-            {
-                await _emailService.SendEmailAsync(request.To, request.Subject, request.Body);
-                return Ok("Email sent successfully.");
-            }
-            catch (Exception ex)
-            {
-                return StatusCode(500, $"An error occurred while sending the email: {ex.Message}");
-            }
+            _emailQueue.EnqueueEmail(request);
+            return Ok("Email has been queued for sending.");
         }
     }
 
