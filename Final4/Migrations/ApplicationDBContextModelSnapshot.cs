@@ -184,6 +184,12 @@ namespace Final4.Migrations
                     b.Property<string>("Note")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<int>("OrderDetailId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("OrderDetailId"));
+
                     b.Property<int>("Quantity")
                         .HasColumnType("int");
 
@@ -205,7 +211,13 @@ namespace Final4.Migrations
                     b.Property<string>("Comment")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("OrderId")
+                    b.Property<int>("OrderDetailFlowerId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("OrderDetailId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("OrderDetailOrderId")
                         .HasColumnType("int");
 
                     b.Property<int>("RatingValue")
@@ -213,7 +225,7 @@ namespace Final4.Migrations
 
                     b.HasKey("RatingId");
 
-                    b.HasIndex("OrderId");
+                    b.HasIndex("OrderDetailOrderId", "OrderDetailFlowerId");
 
                     b.ToTable("Ratings");
                 });
@@ -280,13 +292,13 @@ namespace Final4.Migrations
 
             modelBuilder.Entity("Final4.Model.Entities.Rating", b =>
                 {
-                    b.HasOne("Final4.Model.Entities.Order", "Order")
+                    b.HasOne("Final4.Model.Entities.OrderDetail", "OrderDetail")
                         .WithMany("Ratings")
-                        .HasForeignKey("OrderId")
+                        .HasForeignKey("OrderDetailOrderId", "OrderDetailFlowerId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("Order");
+                    b.Navigation("OrderDetail");
                 });
 
             modelBuilder.Entity("Final4.Model.Entities.Account", b =>
@@ -302,7 +314,10 @@ namespace Final4.Migrations
             modelBuilder.Entity("Final4.Model.Entities.Order", b =>
                 {
                     b.Navigation("OrderDetails");
+                });
 
+            modelBuilder.Entity("Final4.Model.Entities.OrderDetail", b =>
+                {
                     b.Navigation("Ratings");
                 });
 #pragma warning restore 612, 618

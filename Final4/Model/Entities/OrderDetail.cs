@@ -1,7 +1,13 @@
-﻿namespace Final4.Model.Entities
+﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
+
+namespace Final4.Model.Entities
 {
     public class OrderDetail
     {
+        [Key]
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+        public int OrderDetailId { get; set; }
         public int OrderId { get; set; }      // Khóa ngoại liên kết với Order
         public virtual Order Order { get; set; }     // Điều hướng (navigation property)
 
@@ -10,5 +16,7 @@
 
         public required int Quantity { get; set; }    // Số lượng sản phẩm
         public string? Note { get; set; }     // Ghi chú (nếu cần)
+        public virtual ICollection<Rating> Ratings { get; set; }  // Mỗi OrderDetail có thể có nhiều đánh giá (Ratings)
+
     }
 }

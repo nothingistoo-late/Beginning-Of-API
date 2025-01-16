@@ -10,6 +10,14 @@ namespace Final4.Migrations
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
+            migrationBuilder.AddColumn<int>(
+                name: "OrderDetailId",
+                table: "OrderDetails",
+                type: "int",
+                nullable: false,
+                defaultValue: 0)
+                .Annotation("SqlServer:Identity", "1, 1");
+
             migrationBuilder.CreateTable(
                 name: "Ratings",
                 columns: table => new
@@ -18,23 +26,25 @@ namespace Final4.Migrations
                         .Annotation("SqlServer:Identity", "1, 1"),
                     RatingValue = table.Column<int>(type: "int", nullable: false),
                     Comment = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    OrderId = table.Column<int>(type: "int", nullable: false)
+                    OrderDetailId = table.Column<int>(type: "int", nullable: false),
+                    OrderDetailOrderId = table.Column<int>(type: "int", nullable: false),
+                    OrderDetailFlowerId = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Ratings", x => x.RatingId);
                     table.ForeignKey(
-                        name: "FK_Ratings_Orders_OrderId",
-                        column: x => x.OrderId,
-                        principalTable: "Orders",
-                        principalColumn: "OrderId",
+                        name: "FK_Ratings_OrderDetails_OrderDetailOrderId_OrderDetailFlowerId",
+                        columns: x => new { x.OrderDetailOrderId, x.OrderDetailFlowerId },
+                        principalTable: "OrderDetails",
+                        principalColumns: new[] { "OrderId", "FlowerId" },
                         onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateIndex(
-                name: "IX_Ratings_OrderId",
+                name: "IX_Ratings_OrderDetailOrderId_OrderDetailFlowerId",
                 table: "Ratings",
-                column: "OrderId");
+                columns: new[] { "OrderDetailOrderId", "OrderDetailFlowerId" });
         }
 
         /// <inheritdoc />
@@ -42,6 +52,10 @@ namespace Final4.Migrations
         {
             migrationBuilder.DropTable(
                 name: "Ratings");
+
+            migrationBuilder.DropColumn(
+                name: "OrderDetailId",
+                table: "OrderDetails");
         }
     }
 }

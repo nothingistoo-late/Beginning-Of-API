@@ -16,9 +16,9 @@ namespace Final4.Model.Entities
         public string? Comment { get; set; }  // Bình luận (nếu có)
 
         // Khóa ngoại để liên kết với Order
-        [ForeignKey("Order")]
-        public int OrderId { get; set; }  // Khóa ngoại liên kết với Order
+        [ForeignKey("OrderDetailId")]
+        public int OrderDetailId { get; set; }  // Khóa ngoại liên kết với Order
         [JsonIgnore]
-        public virtual Order Order { get; set; }  // Điều hướng đến Order
+        public virtual OrderDetail OrderDetail { get; set; }  // Điều hướng đến Order
     }
 }

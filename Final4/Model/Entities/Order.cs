@@ -18,7 +18,6 @@ namespace Final4.Model.Entities
         [JsonIgnore]
 
         public virtual ICollection<OrderDetail> OrderDetails { get; set; }  
-        public virtual ICollection<Rating> Ratings { get; set; }  // Mối quan hệ 1-nhiều với Rating
 
     }
 }
