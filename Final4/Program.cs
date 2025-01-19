@@ -16,7 +16,6 @@ builder.Services.AddScoped<EmailService>();
 // Đăng ký Background Service
 builder.Services.AddHostedService<EmailBackgroundService>();
 // Add services to the container.
-
 builder.Services.AddControllers();
 // Cấu hình Swagger/OpenAPI
 builder.Services.AddEndpointsApiExplorer();
