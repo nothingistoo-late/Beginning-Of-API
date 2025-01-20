@@ -201,5 +201,57 @@ namespace Final4.Controllers
             else
                 return Ok(checkAccountExits);
         }
+    
+
+        [HttpPost]
+        [Route("FastLogin")]
+        public async Task<IActionResult> FastLogin()
+        {
+            var anonymousUserId = Guid.NewGuid().ToString();
+
+            // Lấy thông tin từ appsettings
+            var jwtConfig = _configuration.GetSection("JwtConfig");
+            var issuer = jwtConfig["Issuer"];
+            var audience = jwtConfig["Audience"];
+            var key = jwtConfig["Key"];
+            var expirationMinutes = int.Parse(jwtConfig["TokenValidityMins"]);
+
+            // Tạo các claim (ví dụ Role)
+            var claims = new[]
+         {
+            new Claim(JwtRegisteredClaimNames.Sub, anonymousUserId), // ID ẩn danh
+            new Claim(ClaimTypes.Role, "Anonymous"), // Vai trò: Anonymous
+            new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()), // Token ID
+            new Claim(JwtRegisteredClaimNames.Iat, DateTime.UtcNow.ToString()) // Thời gian tạo
+        };
+
+            // Tạo token
+            var keyByteArray = Encoding.UTF8.GetBytes(key);
+            var securityKey = new SymmetricSecurityKey(keyByteArray);
+            var credentials = new SigningCredentials(securityKey, SecurityAlgorithms.HmacSha256);
+
+            var expiration = DateTime.UtcNow.AddMinutes(expirationMinutes);
+
+            var tokenDescriptor = new SecurityTokenDescriptor
+            {
+                Subject = new ClaimsIdentity(claims),
+                Expires = expiration,
+                Issuer = issuer,
+                Audience = audience,
+                SigningCredentials = credentials
+            };
+
+            var tokenHandler = new JwtSecurityTokenHandler();
+            var token = tokenHandler.CreateToken(tokenDescriptor);
+
+            // Trả về token và thời gian hết hạn
+            var response = new
+            {
+                Token = tokenHandler.WriteToken(token),
+                Expiration = expiration
+            };
+            return Ok(response);  // Trả về token và thời gian hết hạn
+        }
+
     }
 }
