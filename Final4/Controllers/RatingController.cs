@@ -108,6 +108,53 @@ namespace Final4.Controllers
         {
             return Ok(await _dbcontext.Ratings.Include(r=> r.Comments).ToListAsync());
         }
+
+        [HttpDelete]
+        [Route("deleteRatingBy/{id}")]
+        public async Task<IActionResult> DeleteRatingById(int id)
+        {
+            try
+            {
+                // Tìm rating theo Id
+                var rating = await _dbcontext.Ratings.FindAsync(id);
+
+                // Nếu không tìm thấy
+                if (rating == null)
+                {
+                    return NotFound(new
+                    {
+                        Message = $"Rating with ID {id} not found.",
+                        Success = false
+                    });
+                }
+
+                // Xóa rating
+                _dbcontext.Ratings.Remove(rating);
+                await _dbcontext.SaveChangesAsync();
+
+                // Trả về thông báo thành công
+                return Ok(new
+                {
+                    Message = $"Rating with ID {id} deleted successfully.",
+                    Success = true
+                });
+            }
+            catch (Exception ex)
+            {
+                // Trả về lỗi chi tiết trong trường hợp exception
+                return BadRequest(new
+                {
+                    Message = "An error occurred while deleting the rating.",
+                    Success = false,
+                    Error = ex.Message
+                });
+            }
+        }
+
+
+        //[HttpPut]
+        //[Route("updateRatingBy{id}")]
+        //public async Task<IActionResult> updateRatingById
     }
 
 }
