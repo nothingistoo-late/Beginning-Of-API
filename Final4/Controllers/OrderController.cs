@@ -156,8 +156,6 @@ namespace Final4.Controllers
                 // Cập nhật số lượng hoa trong kho
                 cartItem.Flower.FlowerQuantity -= cartItem.Quantity;
             }
-
-
             // Thêm đơn hàng vào cơ sở dữ liệu
             await _dbContext.Orders.AddAsync(order);
             await _dbContext.SaveChangesAsync();
@@ -178,7 +176,5 @@ namespace Final4.Controllers
 
             return Ok(order);
         }
-
-
     }
 }
