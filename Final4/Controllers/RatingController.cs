@@ -40,7 +40,7 @@ namespace Final4.Controllers
             _dbcontext.Ratings.Add(rating);
             await _dbcontext.SaveChangesAsync();
 
-            return Ok(rating);
+            return Ok(Rating);
         }
 
         [HttpPost("{id}/likebyid")]
@@ -91,7 +91,7 @@ namespace Final4.Controllers
         }
 
         // Lấy danh sách bình luận
-        [HttpGet("{id}/getcomment")]
+        [HttpGet("{id}/getcommentByRatinglId")]
         public async Task<IActionResult> GetComments(int id)
         {
             var comments = await _dbcontext.Comments
@@ -152,9 +152,32 @@ namespace Final4.Controllers
         }
 
 
-        //[HttpPut]
-        //[Route("updateRatingBy{id}")]
-        //public async Task<IActionResult> updateRatingById
+        [HttpPut]
+        [Route("updateRatingBy{id}")]
+        public async Task<IActionResult> updateRatingById(int id, [FromBody] UpdateRating obj )
+        {
+            var rating = await _dbcontext.Ratings
+                      .FirstOrDefaultAsync(r => r.OrderDetailId == id);
+
+            if (rating == null)
+            {
+                return NotFound("Rating not found for the given OrderDetail.");
+            }
+
+            if (obj.RatingValue > 5 || obj.RatingValue < 0)
+            {
+                return BadRequest("Rating must be between 1 and 5.");
+            }
+
+            // Cập nhật giá trị của Rating
+            rating.RatingValue = obj.RatingValue;
+            rating.Comment = obj.Comment;
+
+            _dbcontext.Ratings.Update(rating);
+            await _dbcontext.SaveChangesAsync();
+
+            return Ok(obj);
+        }
     }
 
 }
