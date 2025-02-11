@@ -9,13 +9,11 @@ namespace Final4.Controllers
 {
     public class CartController : Controller
     {
-        private readonly IConfiguration _configuration;
         private readonly ApplicationDBContext _dbContext;
         private readonly EmailService _emailService;
         public CartController(ApplicationDBContext DBContext, IConfiguration configuration, EmailService emailService)
         {
             _dbContext = DBContext;
-            _configuration = configuration;
             _emailService = emailService;
         }
 
