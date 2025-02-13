@@ -14,6 +14,8 @@ public class EmailService
         _smtpSettings = configuration.GetSection("SmtpSettings").Get<SmtpSettings>();
     }
 
+    // này chỉ gửi mail thoi, nhập vào người nhận, tiêu đề, và body rồi gửi thoi
+
     public async Task SendEmailAsync(List<string> to, string subject, string body)
     {
         var email = new MimeMessage();
@@ -28,6 +30,7 @@ public class EmailService
         {
             Text = body
         };
+        //mail
 
         using var smtp = new SmtpClient();
         await smtp.ConnectAsync(_smtpSettings.Host, _smtpSettings.Port, MailKit.Security.SecureSocketOptions.StartTls);
@@ -36,6 +39,8 @@ public class EmailService
         await smtp.DisconnectAsync(true);
     }
 
+
+    // cái này chỉ là tạo body cho gửi bill gmail thôi, đừng cố đọc hiểu làm gì cho mệt 
     public string GenerateOrderEmailBody(Order order)
     {
         var sb = new StringBuilder();

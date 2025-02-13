@@ -2,6 +2,9 @@
 
 public class EmailReminderService : IHostedService
 {
+    // this class just for configuring about Remind Email, you can change when you send at line 27 
+
+
     private readonly ISchedulerFactory _schedulerFactory;
     private IScheduler _scheduler;
 

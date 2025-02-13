@@ -16,6 +16,7 @@ public class SendEmailJob : IJob
         _logger = logger;
     }
 
+    // execute hosted gmail reminder, dont mind on it, trust me bro 
     public async Task Execute(IJobExecutionContext context)
     {
         _logger.LogInformation("SendEmailJob started at {Time}", DateTime.Now);
@@ -32,7 +33,7 @@ public class SendEmailJob : IJob
             {
                 // Gửi email đến danh sách
                 await _emailService.SendEmailAsync(emails, "Reminder Mail", "Đây chỉ là mail test, nếu bạn đọc dc mail này thì chứng tỏ 1 thằng nào đó trong nhóm đã test thành công chức năng gửi mail reminder!!");
-                _logger.LogWarning("Emails successfully sent at {Time}", DateTime.Now);
+                _logger.LogInformation("Emails successfully sent at {Time}", DateTime.Now);
             }
             else
             {

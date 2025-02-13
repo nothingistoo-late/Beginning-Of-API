@@ -13,7 +13,7 @@ namespace Final4.Service.Email
             _emailService = emailService;
             _logger = logger;
         }
-
+        // start email background
         protected override async Task ExecuteAsync(CancellationToken stoppingToken)
         {
             _logger.LogInformation("Email Background Service is starting.");
