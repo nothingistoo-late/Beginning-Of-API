@@ -17,7 +17,7 @@ public class EmailService
     public async Task SendEmailAsync(List<string> to, string subject, string body)
     {
         var email = new MimeMessage();
-        email.From.Add(new MailboxAddress("Sender Name", _smtpSettings.SenderEmail));
+        email.From.Add(new MailboxAddress("Admin", _smtpSettings.SenderEmail));
         email.To.Add(MailboxAddress.Parse("hctrung2k4@gmail.com"));
         foreach (var recipient in to)
         {

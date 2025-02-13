@@ -23,14 +23,15 @@ public class SendEmailJob : IJob
         try
         {
             // Lấy danh sách email từ DB
-            var emails = await _dbContext.Accounts
+            var emails = await _dbContext.Accounts.
+                                           Where(o => o.AccountRoleID == "User")
                                           .Select(a => a.AccountEmail)
                                           .ToListAsync();
 
             if (emails.Any())
             {
                 // Gửi email đến danh sách
-                await _emailService.SendEmailAsync(emails, "Reminder Mail", "Reminder Bro");
+                await _emailService.SendEmailAsync(emails, "Reminder Mail", "Đây chỉ là mail test, nếu bạn đọc dc mail này thì chứng tỏ 1 thằng nào đó trong nhóm đã test thành công chức năng gửi mail reminder!!");
                 _logger.LogWarning("Emails successfully sent at {Time}", DateTime.Now);
             }
             else
