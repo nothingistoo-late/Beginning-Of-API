@@ -79,7 +79,7 @@ namespace Final4.Controllers
                 // Gửi email sau khi đã thêm tất cả tài khoản thành công
                 foreach (var obj in regisaccount)
                 {
-                    await _emailService.SendEmailAsync(obj.Email, "Created Account Successfully",
+                    await _emailService.SendEmailAsync(new List<string> { obj.Email}, "Created Account Successfully",
                         $"You Had Created An Account On Our Page, Your Password Is '{obj.Password}'\n Please Do Not Provide This Password To Anyone");
                 }
 
@@ -185,7 +185,7 @@ namespace Final4.Controllers
             {
                 checkAccountExits.AccountPassword = obj.ConfirmPassword;
                 await _dbContext.SaveChangesAsync();
-                await _emailService.SendEmailAsync(email, "Your Password In Final4 Has Reset Succesfully", "Your Password Has Been Changed, Your New Password Is " + obj.ConfirmPassword + "\n Please Change Your Password if this is not done by you");
+                await _emailService.SendEmailAsync(new List<string> { email}, "Your Password In Final4 Has Reset Succesfully", "Your Password Has Been Changed, Your New Password Is " + obj.ConfirmPassword + "\n Please Change Your Password if this is not done by you");
                 return Ok("Updated Completed");
             }
             else return BadRequest("Confirm Password Doesnt Match New Password");

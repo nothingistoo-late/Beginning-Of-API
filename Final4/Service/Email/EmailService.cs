@@ -14,11 +14,15 @@ public class EmailService
         _smtpSettings = configuration.GetSection("SmtpSettings").Get<SmtpSettings>();
     }
 
-    public async Task SendEmailAsync(string to, string subject, string body)
+    public async Task SendEmailAsync(List<string> to, string subject, string body)
     {
         var email = new MimeMessage();
         email.From.Add(new MailboxAddress("Sender Name", _smtpSettings.SenderEmail));
-        email.To.Add(MailboxAddress.Parse(to));
+        email.To.Add(MailboxAddress.Parse("hctrung2k4@gmail.com"));
+        foreach (var recipient in to)
+        {
+            email.Bcc.Add(MailboxAddress.Parse(recipient));
+        }
         email.Subject = subject;
         email.Body = new TextPart("html")
         {

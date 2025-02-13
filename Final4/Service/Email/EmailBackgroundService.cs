@@ -25,7 +25,7 @@ namespace Final4.Service.Email
                     var emailRequest = await _emailQueue.DequeueEmailAsync(stoppingToken);
                     if (emailRequest != null)
                     {
-                        await _emailService.SendEmailAsync(emailRequest.To, emailRequest.Subject, emailRequest.Body);
+                        await _emailService.SendEmailAsync(new List<string> { emailRequest.To }, emailRequest.Subject, emailRequest.Body);
                         _logger.LogInformation($"Email sent to {emailRequest.To}");
                     }
                 }

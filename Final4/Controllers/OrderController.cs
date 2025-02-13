@@ -163,7 +163,7 @@ namespace Final4.Controllers
             string body = _emailService.GenerateOrderEmailBody(order);
             var listUser = await _dbContext.Accounts.ToListAsync();
             Account account = listUser.FirstOrDefault(o => o.AccountId == accountId);
-            await _emailService.SendEmailAsync(account.AccountEmail, "Purche Successfully", body);
+            await _emailService.SendEmailAsync(new List<string> { account.AccountEmail }, "Purche Successfully", body);
 
             // Xóa các sản phẩm trong giỏ hàng sau khi tạo đơn hàng
             _dbContext.CartItems.RemoveRange(cart.CartItems);

@@ -5,8 +5,21 @@ using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using Microsoft.OpenApi.Models;
 using Final4.Service.Email;
+using Quartz;
 
 var builder = WebApplication.CreateBuilder(args);
+
+builder.Services.AddQuartz(q =>
+{
+    // Sử dụng DI container để tạo job
+    q.UseMicrosoftDependencyInjectionJobFactory();
+});
+builder.Services.AddHostedService<EmailReminderService>();
+
+builder.Services.AddQuartzHostedService(q => q.WaitForJobsToComplete = true);
+
+builder.Logging.AddConsole(); // Thêm logging vào Console
+
 // Đăng ký EmailQueue
 builder.Services.AddSingleton<EmailQueue>();
 
