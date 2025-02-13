@@ -7,6 +7,7 @@ namespace Final4.Service.Email
     {
         private readonly ConcurrentQueue<EmailRequest> _emailRequests = new();
         private readonly SemaphoreSlim _signal = new(0);
+        // this just add mail to queue for send, dont try to understand it, trust me
 
         public void EnqueueEmail(EmailRequest emailRequest)
         {
