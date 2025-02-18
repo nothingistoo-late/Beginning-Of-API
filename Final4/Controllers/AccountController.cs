@@ -79,10 +79,22 @@ namespace Final4.Controllers
                 // Gửi email sau khi đã thêm tất cả tài khoản thành công
                 foreach (var obj in regisaccount)
                 {
-                    await _emailService.SendEmailAsync(new List<string> { obj.Email}, "Created Account Successfully",
-                        $"You Had Created An Account On Our Page, Your Password Is '{obj.Password}'\n Please Do Not Provide This Password To Anyone");
-                }
+                    var subject = "Account Created Successfully!";
+                    var body = $@"
+                    <p>Dear {obj.Email},</p>
+                    <p>We are excited to inform you that your account has been successfully created on our platform!</p>
+                    <p><strong>Your account details:</strong></p>
+                    <ul>
+                    <li><strong>Email:</strong> {obj.Email}</li>
+                    <li><strong>Password:</strong> <em>Your password has been securely stored. Please change it after your first login.</em></li>
+                    </ul>
+                    <p>If you have any questions or issues, feel free to contact our support team.</p>
+                    <p>Thank you for joining us!</p>
+                    <br>
+                    <p>Best regards,<br>Your Website Team</p>";
+                    await _emailService.SendEmailAsync(new List<string> { obj.Email }, subject, body);
 
+                }
                 return Ok();
             }
             catch (Exception ex)
@@ -113,7 +125,6 @@ namespace Final4.Controllers
                         new Claim(ClaimTypes.Email, checkAccountExits.AccountEmail),
                         new Claim(ClaimTypes.Role, checkAccountExits.AccountRoleID),  // Thêm role vào claim
                         new Claim("AccountId", checkAccountExits.AccountId.ToString()) // Thêm AccountId
-
                     };
 
                 // Tạo token
@@ -185,7 +196,17 @@ namespace Final4.Controllers
             {
                 checkAccountExits.AccountPassword = obj.ConfirmPassword;
                 await _dbContext.SaveChangesAsync();
-                await _emailService.SendEmailAsync(new List<string> { email}, "Your Password In Final4 Has Reset Succesfully", "Your Password Has Been Changed, Your New Password Is " + obj.ConfirmPassword + "\n Please Change Your Password if this is not done by you");
+                var subject = "Your Password Has Been Successfully Reset";
+                var body = $@"
+                <p>Dear {email},</p>
+                <p>We wanted to let you know that your password has been successfully reset.</p>
+                <p><strong>New password:</strong> <em>{obj.ConfirmPassword}</em></p>
+                <p>If you did not request this change, please reset your password immediately to ensure your account remains secure.</p>
+                <p>If you encounter any issues, don't hesitate to contact our support team.</p>
+                <br>
+                <p>Best regards,<br>Your Website Team</p>";
+                await _emailService.SendEmailAsync(new List<string> { email }, subject, body);
+
                 return Ok("Updated Completed");
             }
             else return BadRequest("Confirm Password Doesnt Match New Password");
@@ -201,7 +222,6 @@ namespace Final4.Controllers
             else
                 return Ok(checkAccountExits);
         }
-    
 
         [HttpPost]
         [Route("FastLogin")]
@@ -252,6 +272,5 @@ namespace Final4.Controllers
             };
             return Ok(response);  // Trả về token và thời gian hết hạn
         }
-
     }
 }

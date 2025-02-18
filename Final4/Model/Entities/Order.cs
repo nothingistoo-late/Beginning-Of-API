@@ -11,6 +11,11 @@ namespace Final4.Model.Entities
         public int OrderId { get; set; }  // Khóa chính
         public required string OrderName { get; set; }
         public string OrderStatus { get; set; }
+        public DateTime CreatedAt { get; set; }
+        public Order()
+        {
+            CreatedAt = TimeZoneInfo.ConvertTimeBySystemTimeZoneId(DateTime.UtcNow, "SE Asia Standard Time");
+        }
 
         [ForeignKey("Account")]
         public int AccountId { get; set; }  // Khóa ngoại liên kết với User

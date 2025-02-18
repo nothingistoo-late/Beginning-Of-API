@@ -15,7 +15,11 @@ namespace Final4.Model.Entities
         public int LikeCount { get; set; }  // Số lượng lượt thích
         public int DislikeCount { get; set; }  // Số lượng lượt không thích
         public string Comment { get; set; }  // Bình luận (nếu có)
-
+        public DateTime CreatedAt { get; set; }
+        public Rating()
+        {
+            CreatedAt = TimeZoneInfo.ConvertTimeBySystemTimeZoneId(DateTime.UtcNow, "SE Asia Standard Time");
+        }
         public int OrderDetailId { get; set; }  // Khóa ngoại liên kết với OrderDetail
         [JsonIgnore]
         public virtual OrderDetail OrderDetail { get; set; }  // Điều hướng đến OrderDetail

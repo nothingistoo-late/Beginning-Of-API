@@ -14,7 +14,12 @@ namespace Final4.Model.Entities
         public required decimal FlowerPrice { get; set; }
         public required decimal FlowerQuantity { get; set; }
         public required string FlowerImgUrl { get; set; }
-       // public virtual ICollection<OrderDetail> OrderDetail { get; set; }  // Mối quan hệ nhiều-nhiều với Order
+        public DateTime CreatedAt { get; set; }
+        public Flower()
+        {
+            CreatedAt = TimeZoneInfo.ConvertTimeBySystemTimeZoneId(DateTime.UtcNow, "SE Asia Standard Time");
+        }
+        // public virtual ICollection<OrderDetail> OrderDetail { get; set; }  // Mối quan hệ nhiều-nhiều với Order
 
     }
 }

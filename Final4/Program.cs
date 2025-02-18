@@ -9,11 +9,14 @@ using Quartz;
 
 var builder = WebApplication.CreateBuilder(args);
 
+// khai báo dịch vụ Quartz 
 builder.Services.AddQuartz(q =>
 {
     // Sử dụng DI container để tạo job
     q.UseMicrosoftDependencyInjectionJobFactory();
 });
+
+
 builder.Services.AddHostedService<EmailReminderService>();
 
 builder.Services.AddQuartzHostedService(q => q.WaitForJobsToComplete = true);
