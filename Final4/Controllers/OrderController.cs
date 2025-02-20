@@ -102,6 +102,8 @@ namespace Final4.Controllers
             return Ok();
         }
 
+        // kiểm tra và thanh toán 
+
         [HttpPost]
         [Route("Checkout")]
         public async Task<IActionResult> Checkout([FromBody] CheckoutRequest request)
