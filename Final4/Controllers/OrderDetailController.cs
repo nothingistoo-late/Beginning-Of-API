@@ -16,7 +16,7 @@ namespace Final4.Controllers
             _dbContext = DBContext;
         }
         [HttpGet]
-        [Route("GetOrderDetailByOrderId")]
+        [Route("GetOrderDetailByOrderId/{id}")]
         public async Task<IActionResult> GetOrderDetailByOrderId(int id)
         {
             // Lấy danh sách các OrderDetail theo OrderId

@@ -1,9 +1,6 @@
-﻿using Final4.Configuration;
-using Final4.DTO.Email;
+﻿using Final4.DTO.Email;
 using Final4.Service.Email;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using MimeKit;
 
 namespace Final4.Controllers
 {

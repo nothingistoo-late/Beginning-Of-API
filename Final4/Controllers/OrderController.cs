@@ -40,7 +40,7 @@ namespace Final4.Controllers
             // return Ok(await _dbContext.Orders.Include(o=>o.Account.AccountEmail).ToListAsync());
         }
         [HttpGet]
-        [Route("GetOrderByGmail{Gmail}")]
+        [Route("GetOrderByGmail/{Gmail}")]
         public async Task<IActionResult> GetOrderByEmail(string Gmail)
         {
             var orders = await _dbContext.Orders
@@ -82,7 +82,7 @@ namespace Final4.Controllers
         }
 
         [HttpDelete]
-        [Route("DeleteOrderByOrderId{id}")]
+        [Route("DeleteOrderByOrderId/{id}")]
         public async Task<IActionResult> DeleteORderByOrderId(int id)
         {
             // Lấy thông tin Order từ cơ sở dữ liệu
@@ -174,7 +174,6 @@ namespace Final4.Controllers
             // Lấy tất cả các bản ghi trong bảng Carts và xóa chúng
             _dbContext.Carts.RemoveRange(_dbContext.Carts.ToList());
             await _dbContext.SaveChangesAsync();
-
 
             return Ok(order);
         }

@@ -163,7 +163,7 @@ namespace Final4.Controllers
 
         [Authorize(Policy = "AdminPolicy")]
         [HttpDelete]
-        [Route("DeleteUserBy{id}")]
+        [Route("DeleteUserByid/{id}")]
         public async Task<IActionResult> DeleteUserByID(int id)
         {
             var user = await _dbContext.Accounts.FirstOrDefaultAsync(a => a.AccountId == id);
@@ -186,7 +186,7 @@ namespace Final4.Controllers
                 return Ok(await _dbContext.Accounts.ToListAsync());
         }
         [HttpPut]
-        [Route("FogetPassword{email}")]
+        [Route("FogetPasswordByEmail/{email}")]
         public async Task<IActionResult> FogetPassword(string email, ResetPassword obj)
         {
             var checkAccountExits = _dbContext.Accounts.FirstOrDefault(x => x.AccountEmail == email);

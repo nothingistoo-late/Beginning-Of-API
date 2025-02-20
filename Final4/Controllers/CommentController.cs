@@ -13,7 +13,7 @@ namespace Final4.Controllers
             _dbcontext = dbcontext;
         }
         // Thêm bình luận
-        [HttpPost("{id}/addcomment")]
+        [HttpPost("addcommentbyid/{id}")]
         public async Task<IActionResult> AddComment(int id, [FromBody] string content)
         {
             var rating = await _dbcontext.Ratings.FindAsync(id);
@@ -30,7 +30,7 @@ namespace Final4.Controllers
         }
 
         // Lấy danh sách bình luận
-        [HttpGet("{id}/getcommentByRatinglId")]
+        [HttpGet("getcommentByRatingId{id}")]
         public async Task<IActionResult> GetComments(int id)
         {
             var comments = await _dbcontext.Comments

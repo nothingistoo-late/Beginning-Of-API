@@ -2,7 +2,6 @@
 using Final4.Configuration;
 using Final4.Model.Entities;
 using MailKit.Net.Smtp;
-using MailKit.Security;
 using MimeKit;
 
 public class EmailService

@@ -43,7 +43,7 @@ namespace Final4.Controllers
             return Ok(Rating);
         }
 
-        [HttpPost("{id}/likebyid")]
+        [HttpPost("likebyRatingid/{id}")]
         public async Task<IActionResult> LikeRating(int id)
         {
             var rating = await _dbcontext.Ratings.FindAsync(id);
@@ -57,7 +57,7 @@ namespace Final4.Controllers
         }
 
         // Tăng Dislike
-        [HttpPost("{id}/dislikebyid")]
+        [HttpPost("dislikebyRatingid/{id}")]
         public async Task<IActionResult> DislikeRating(int id)
         {
             var rating = await _dbcontext.Ratings.FindAsync(id);
@@ -78,7 +78,7 @@ namespace Final4.Controllers
         }
 
         [HttpDelete]
-        [Route("deleteRatingBy/{id}")]
+        [Route("deleteRatingByid/{id}")]
         public async Task<IActionResult> DeleteRatingById(int id)
         {
             try
