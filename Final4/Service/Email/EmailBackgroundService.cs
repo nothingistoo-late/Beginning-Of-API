@@ -1,5 +1,4 @@
-﻿using Microsoft.Extensions.Hosting;
-namespace Final4.Service.Email
+﻿namespace Final4.Service.Email
 {
     public class EmailBackgroundService : BackgroundService
     {

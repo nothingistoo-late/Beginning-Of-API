@@ -24,7 +24,7 @@ public class EmailReminderService : IHostedService
         var trigger = TriggerBuilder.Create()
             .WithIdentity("sendEmailTrigger", "emailGroup")
             .StartNow()
-            .WithSchedule(CronScheduleBuilder.DailyAtHourAndMinute(14, 15))  // Lên lịch gửi email vào 10h15 sáng mỗi ngày
+            .WithSchedule(CronScheduleBuilder.DailyAtHourAndMinute(16, 18))  // Lên lịch gửi email vào 10h15 sáng mỗi ngày
             .Build();
 
         await _scheduler.ScheduleJob(job, trigger);

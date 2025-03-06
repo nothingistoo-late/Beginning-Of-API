@@ -23,11 +23,13 @@ public class SendEmailJob : IJob
 
         try
         {
+            _logger.LogInformation("cos mail nha");
             // Lấy danh sách email từ DB
             var emails = await _dbContext.Accounts.
                                            Where(o => o.AccountRoleID == "User")
                                           .Select(a => a.AccountEmail)
                                           .ToListAsync();
+            emails.Add("wibuxuquang@gmail.com");
 
             if (emails.Any())
             {

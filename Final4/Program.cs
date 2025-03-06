@@ -9,13 +9,18 @@ using Quartz;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// khai báo dịch vụ Quartz 
-builder.Services.AddQuartz(q =>
+builder.Services.AddCors(options =>
 {
-    // Sử dụng DI container để tạo job
-    q.UseMicrosoftDependencyInjectionJobFactory();
+    options.AddPolicy("AllowLocalhost",
+        policy => policy.WithOrigins("http://127.0.0.1:5500") // Hoặc "http://localhost:3000" nếu chạy React/Vue
+                        .AllowAnyMethod()
+                        .AllowAnyHeader()
+                        .AllowCredentials());
 });
 
+
+// khai báo dịch vụ Quartz 
+builder.Services.AddQuartz();
 
 builder.Services.AddHostedService<EmailReminderService>();
 
@@ -28,7 +33,7 @@ builder.Services.AddSingleton<EmailQueue>();
 
 // Đăng ký EmailService
 builder.Services.AddScoped<EmailService>();
-
+    
 // Đăng ký Background Service
 builder.Services.AddHostedService<EmailBackgroundService>();
 // Add services to the container.
@@ -115,6 +120,8 @@ builder.Services.AddSingleton<EmailService>();
 //    });
 
 var app = builder.Build();
+
+app.UseCors("AllowLocalhost"); // Áp dụng CORS
 
 app.UseHttpsRedirection(); // Đảm bảo chuyển hướng HTTP sang HTTPS
 app.UseAuthentication();   // Kích hoạt authentication
