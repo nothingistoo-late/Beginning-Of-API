@@ -16,7 +16,7 @@ builder.Services.AddCors(options =>
                         .AllowAnyMethod()
                         .AllowAnyHeader()
                         .AllowCredentials());
-});
+}); 
 
 
 // khai báo dịch vụ Quartz 

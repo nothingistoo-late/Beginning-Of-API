@@ -24,6 +24,8 @@
 
   <ItemGroup>
     <Folder Include="Migrations\" />
+    <Folder Include="IRepository\" />
+    <Folder Include="Repository\" />
   </ItemGroup>
 
 </Project>
