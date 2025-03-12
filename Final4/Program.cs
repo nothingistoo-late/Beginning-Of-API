@@ -16,8 +16,9 @@ builder.Services.AddCors(options =>
                         .AllowAnyMethod()
                         .AllowAnyHeader()
                         .AllowCredentials());
-}); 
+});
 
+builder.Services.AddScoped<IAccountRepository, AccountRepository>();
 
 // khai báo dịch vụ Quartz 
 builder.Services.AddQuartz();
