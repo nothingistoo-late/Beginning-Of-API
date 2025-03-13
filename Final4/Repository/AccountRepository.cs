@@ -2,19 +2,20 @@
 using Final4.DTO.Account;
 using Final4.IRepository;
 using Final4.Model.Entities;
+using Final4.Repository;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
 
-public class AccountRepository 
+public class AccountRepository : GenericRepository<Account>, IAccountRepository
 {
     private readonly ApplicationDBContext _dbContext;
     private readonly IConfiguration _configuration;
     private readonly EmailService _emailService;
 
-    public AccountRepository(ApplicationDBContext dbContext, IConfiguration configuration, EmailService emailService)
+    public AccountRepository(ApplicationDBContext dbContext, IConfiguration configuration, EmailService emailService): base(dbContext)
     {
         _dbContext = dbContext;
         _configuration = configuration;
@@ -86,7 +87,7 @@ public class AccountRepository
         var tokenHandler = new JwtSecurityTokenHandler();
         var token = tokenHandler.CreateToken(tokenDescriptor);
 
-        return tokenHandler.WriteToken(token);
+        return  tokenHandler.WriteToken(token) ;
     }
 
     public async Task<bool> DeleteUserById(int id)

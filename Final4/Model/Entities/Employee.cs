@@ -1,6 +1,6 @@
 ﻿namespace Final4.Model.Entities
 {
-    public class Employee
+    public class Employee : BaseEntity 
     {
         public Guid Id { get; set; }
         public required string? Name { get; set; }
