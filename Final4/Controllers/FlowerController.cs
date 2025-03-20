@@ -1,11 +1,13 @@
 ﻿using Final4.Data;
 using Final4.DTO.Flower;
 using Final4.IRepository;
+using Final4.IService;
 using Final4.Model.Entities;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
+using Repositories.Commons;
 using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 
 namespace Final4.Controllers
@@ -144,21 +146,29 @@ namespace Final4.Controllers
         //        return NotFound();
         //}
 
-        private readonly IFlowerRepository _flowerRepository;
+        private readonly IFlowerService _flowerService;
 
-        public FlowerController(IFlowerRepository flowerRepository)
+        public FlowerController(IFlowerService flowerService)
         {
-            _flowerRepository = flowerRepository;
+            _flowerService = flowerService;
         }
 
         [HttpGet]
         [Route("GetAllFlower")]
         public async Task<IActionResult> GetAllFlower()
         {
-           var flowers = await _flowerRepository.GetAllAsync();
-            if (flowers == null)
-                return NotFound();
-            return Ok(flowers);
+            try
+            {
+                var results = await _flowerService.GetAllFlowerAsync();
+                if (results.IsSuccess)
+                    return Ok(results);
+                return BadRequest(results);
+
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ApiResult<object>.Fail(ex));
+            }
         }
 
         [HttpGet]
@@ -168,10 +178,17 @@ namespace Final4.Controllers
             //var flowers = await _dbcontext.Flowers
             //    .Where(x => x.FlowerName.ToLower().Contains(FlowerName.ToLower()))
             //    .ToListAsync();
-            var flowers = await _flowerRepository.GetAllHaveFilterAsync(x => x.FlowerName.ToLower().Contains(FlowerName.ToLower()));
-            if (flowers.IsNullOrEmpty())
-                return NotFound();
-            return Ok(flowers);
+            try
+            {
+                var results = await _flowerService.GetAllFlowerByNameAsync(FlowerName);
+                if (results.IsSuccess)
+                    return Ok(results);
+                return BadRequest(results);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ApiResult<object>.Fail(ex));
+            }
         }
 
     }

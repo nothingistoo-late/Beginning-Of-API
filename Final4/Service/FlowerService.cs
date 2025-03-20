@@ -1,19 +1,34 @@
-﻿using Final4.IService;
+﻿using Final4.IRepository;
+using Final4.IService;
 using Final4.Model.Entities;
+using Microsoft.IdentityModel.Tokens;
 using Repositories.Commons;
 
 namespace Final4.Service
 {
     public class FlowerService : IFlowerService
     {
-        public Task<ApiResult<Flower>> GetAllFlowerAsync()
+        private readonly IFlowerRepository _flowerRepository;
+        public FlowerService(IFlowerRepository flowerRepository)
         {
-            throw new NotImplementedException();
+            _flowerRepository = flowerRepository;
         }
 
-        public Task<ApiResult<List<Flower>>> GetAllFlowerByNameAsync()
+        public async Task<ApiResult<List<Flower>>> GetAllFlowerAsync()
         {
-            throw new NotImplementedException();
+            var flowers = await _flowerRepository.GetAllAsync();
+            if (flowers == null)
+                return ApiResult<List<Flower>>.Error(null, "nothing found");
+            return ApiResult<List<Flower>>.Succeed(flowers, "Get All Flower Compeleted");
+            //return ApiResult<List<Flower>>.Succeed(flowers, "success");
+        }
+
+        public async Task<ApiResult<List<Flower>>> GetAllFlowerByNameAsync(string flowerName)
+        {
+            var flowers = await _flowerRepository.GetAllHaveFilterAsync(x => x.FlowerName.ToLower().Contains(flowerName.ToLower()));
+            if (flowers.IsNullOrEmpty())
+                return ApiResult<List<Flower>>.Error(null, "nothing found");
+            return ApiResult<List<Flower>>.Succeed(flowers, "Get All Flower Compeleted");
         }
     }
 }
