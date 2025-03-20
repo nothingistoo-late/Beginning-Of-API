@@ -35,15 +35,8 @@ builder.Logging.AddConsole(); // Thêm logging vào Console
 // Đăng ký EmailQueue
 builder.Services.AddSingleton<EmailQueue>();
 
-// Đăng ký EmailService
-builder.Services.AddScoped<EmailService>();
-    
-// Đăng ký Background Service
-builder.Services.AddHostedService<EmailBackgroundService>();
 // Add services to the container.
 builder.Services.AddControllers();
-builder.Services.AddScoped<IFlowerRepository, FlowerRepository>();
-builder.Services.AddScoped<IAccountRepository, AccountRepository>();
 
 builder.Services.ServicesInjection(builder.Configuration);
 
