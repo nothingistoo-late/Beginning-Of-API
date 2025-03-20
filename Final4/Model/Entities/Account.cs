@@ -4,7 +4,7 @@ using System.Text.Json.Serialization;
 
 namespace Final4.Model.Entities
 {
-    public class Account
+    public class Account : BaseEntity
     {
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
