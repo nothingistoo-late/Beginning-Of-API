@@ -6,6 +6,8 @@ using System.Text;
 using Microsoft.OpenApi.Models;
 using Final4.Service.Email;
 using Quartz;
+using Final4.IRepository;
+using Final4.Repository;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -39,6 +41,9 @@ builder.Services.AddScoped<EmailService>();
 builder.Services.AddHostedService<EmailBackgroundService>();
 // Add services to the container.
 builder.Services.AddControllers();
+builder.Services.AddScoped<IFlowerRepository, FlowerRepository>();
+builder.Services.AddScoped<IAccountRepository, AccountRepository>();
+
 // Cấu hình Swagger/OpenAPI
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();

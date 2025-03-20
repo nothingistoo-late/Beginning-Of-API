@@ -50,6 +50,11 @@ namespace Final4.Repository
                 query = query.Include(include);
             }
 
+            if (predicate != null)
+            {
+                query = query.Where(predicate);
+            }
+
             return query.ToListAsync();
         }
 
