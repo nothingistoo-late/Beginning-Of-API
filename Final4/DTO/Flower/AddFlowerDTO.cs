@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace Final4.DTO.Flower
 {
-    public class AddFlower
+    public class AddFlowerDTO
     {
         public required string FlowerName { get; set; }
         public string? FlowerDescription { get; set; }

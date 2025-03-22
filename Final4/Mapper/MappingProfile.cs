@@ -7,7 +7,7 @@ public class MappingProfile : Profile
     public MappingProfile()
     {
         // Ánh xạ từ DTO -> Entity
-        CreateMap<AddFlower, Flower>().ReverseMap();
+        CreateMap<AddFlowerDTO, Flower>().ReverseMap();
 
     }
 }

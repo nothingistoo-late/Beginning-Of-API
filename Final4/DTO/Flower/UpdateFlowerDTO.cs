@@ -1,6 +1,6 @@
 ﻿namespace Final4.DTO.Flower
 {
-    public class UpdateFlower
+    public class UpdateFlowerDTO
     {
         public string? FlowerName { get; set; }
         public string? FlowerDescription { get; set; }

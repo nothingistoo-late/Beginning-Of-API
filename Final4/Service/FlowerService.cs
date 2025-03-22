@@ -17,7 +17,7 @@ namespace Final4.Service
             _unitOfWork = unitOfWork;
             _mapper = mapper;
         }
-        public async Task<ApiResult<List<Flower>>> AddFlowerAsync(List<AddFlower> flowers)
+        public async Task<ApiResult<List<Flower>>> AddFlowerAsync(List<AddFlowerDTO> flowers)
         {
            
             try
@@ -40,7 +40,6 @@ namespace Final4.Service
             }
         }
 
-
         public async Task<ApiResult<List<Flower>>> GetAllFlowerAsync()
         {
             var flowers = await _unitOfWork.FlowerRepository.GetAllAsync();
@@ -57,5 +56,12 @@ namespace Final4.Service
                 return ApiResult<List<Flower>>.Error(null, "Have No Flower With Name: " + flowerName);
             return ApiResult<List<Flower>>.Succeed(flowers, "Get All Flower Compeleted");
         }
+
+        public Task<ApiResult<UpdateFlowerDTO>> UpdateFlowerAsync(UpdateFlowerDTO flower)
+        {
+            throw new NotImplementedException();
+        }
+
+        //public async Task<ApiResult>
     }
 }

@@ -190,7 +190,7 @@ namespace Final4.Controllers
 
         [HttpPost]
         [Route("AddFlower")]
-        public async Task<IActionResult> AddFlowers(List<AddFlower> flowers)
+        public async Task<IActionResult> AddFlowers(List<AddFlowerDTO> flowers)
         {
             if (flowers == null || !flowers.Any())
                 return BadRequest("Flower list cannot be empty");
