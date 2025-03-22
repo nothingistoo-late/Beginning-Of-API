@@ -18,7 +18,7 @@ namespace Final4.Controllers
         }
 
         [HttpPost("send")]
-        public async Task<IActionResult> SendEmail([FromBody] EmailRequest request)
+        public IActionResult SendEmail([FromBody] EmailRequest request)
         {
             if (string.IsNullOrEmpty(request.To) || string.IsNullOrEmpty(request.Subject) || string.IsNullOrEmpty(request.Body))
             {

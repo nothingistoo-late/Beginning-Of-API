@@ -2,9 +2,9 @@
 {
     public class SmtpSettings
     {
-        public string Host { get; set; }
+        public required string Host { get; set; }
         public int Port { get; set; }
-        public string SenderEmail { get; set; }
-        public string SenderPassword { get; set; }
+        public required string SenderEmail { get; set; }
+        public required string SenderPassword { get; set; }
     }
 }

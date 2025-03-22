@@ -10,6 +10,8 @@ namespace Final4.IService
         Task<ApiResult<List<Flower>>> GetAllFlowerByNameAsync(string flowerName);
         Task<ApiResult<List<Flower>>> AddFlowerAsync(List<AddFlowerDTO> flower);
         Task<ApiResult<UpdateFlowerDTO>> UpdateFlowerAsync(UpdateFlowerDTO flower);
+
+        Task<ApiResult<int>> DeleteFlowerAsync(int id);
     }
 
 

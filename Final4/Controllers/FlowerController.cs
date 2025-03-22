@@ -212,5 +212,16 @@ namespace Final4.Controllers
             return Ok(result);
         }
 
+            [HttpDelete]
+            [Route("DeleteFlowerByFlowerId")]
+            public async Task<IActionResult> DeleteFlower([FromQuery]int id)
+            {
+                if (id<=0)
+                    return BadRequest("Flower id is required and >=1!!");
+                var result = await _flowerService.DeleteFlowerAsync(id);
+                if (!result.ApiIsSuccess)
+                    return BadRequest(result);
+                return Ok(result);
+            }
     }
 }

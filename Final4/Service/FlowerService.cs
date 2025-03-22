@@ -19,7 +19,7 @@ namespace Final4.Service
         }
         public async Task<ApiResult<List<Flower>>> AddFlowerAsync(List<AddFlowerDTO> flowers)
         {
-           
+
             try
             {
                 var flowerEntities = _mapper.Map<List<Flower>>(flowers);
@@ -38,6 +38,16 @@ namespace Final4.Service
             {
                 return ApiResult<List<Flower>>.Error(null, $"An error occurred: {ex.Message}");
             }
+        }
+
+        public async Task<ApiResult<int>> DeleteFlowerAsync(int id)
+        {
+            var flowerEntity = await _unitOfWork.FlowerRepository.GetByIdAsync(id);
+            if (flowerEntity == null)
+                return ApiResult<int>.Error(default, "Flower Id = " + id + " Does Not Exist!!\n Please Check FlowerID Again!!");
+            await _unitOfWork.FlowerRepository.Delete(flowerEntity);
+            await _unitOfWork.SaveChangesAsync();
+            return ApiResult<int>.Succeed(id, "Delete Flower With " + id + " Successfully!!");
         }
 
         public async Task<ApiResult<List<Flower>>> GetAllFlowerAsync()
@@ -62,7 +72,7 @@ namespace Final4.Service
 
             var flowerEntity = await _unitOfWork.FlowerRepository.GetByIdAsync(flower.FlowerId);
             if (flowerEntity == null)
-                return ApiResult<UpdateFlowerDTO>.Error(flower, "Flower Id = "+ flower.FlowerId + " Does Not Exist!!\n Please Check FlowerID Again!!");
+                return ApiResult<UpdateFlowerDTO>.Error(flower, "Flower Id = " + flower.FlowerId + " Does Not Exist!!\n Please Check FlowerID Again!!");
             else
 
             {
@@ -84,10 +94,10 @@ namespace Final4.Service
                 //_mapper.Map(flower,flowerEntity);
 
                 await _unitOfWork.SaveChangesAsync();
-                return ApiResult<UpdateFlowerDTO>.Succeed(flower,"Update Flower Successfully");
+                return ApiResult<UpdateFlowerDTO>.Succeed(flower, "Update Flower Successfully");
             }
         }
 
-            //public async Task<ApiResult>
-        }
+        //public async Task<ApiResult>
+    }
 }
