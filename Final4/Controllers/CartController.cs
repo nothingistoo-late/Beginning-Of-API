@@ -40,11 +40,11 @@ namespace Final4.Controllers
             // Chuyển đổi Cart thành CartDTO
             var cartDTO = new CartDTO
             {
-                CartId = cart.CartId,
+                CartId = cart.Id,
                 AccountId = cart.AccountId,
                 CartItems = cart.CartItems.Select(ci => new CartItemDTO
                 {
-                    CartItemId = ci.CartItemId,
+                    CartItemId = ci.Id,
                     FlowerId = ci.FlowerId,
                     FlowerName = ci.Flower.FlowerName, // Chỉ lấy tên hoa
                     Quantity = ci.Quantity,
@@ -66,7 +66,7 @@ namespace Final4.Controllers
             }
 
             var cartItem = await _dbContext.CartItems
-                .FirstOrDefaultAsync(ci => ci.CartItemId == cartItemId && ci.Cart.AccountId == accountId);
+                .FirstOrDefaultAsync(ci => ci.Id == cartItemId && ci.Cart.AccountId == accountId);
 
             if (cartItem == null)
             {
@@ -136,7 +136,7 @@ namespace Final4.Controllers
                 // Thêm sản phẩm mới
                 cartItem = new CartItem
                 {
-                    CartId = cart.CartId,
+                    CartId = cart.Id,
                     FlowerId = request.FlowerId,
                     Quantity = request.Quantity
                 };
@@ -164,7 +164,7 @@ namespace Final4.Controllers
 
             var cartItem = await _dbContext.CartItems
                 .Include(ci => ci.Flower)
-                .FirstOrDefaultAsync(ci => ci.CartItemId == cartItemId && ci.Cart.AccountId == accountId);
+                .FirstOrDefaultAsync(ci => ci.Id == cartItemId && ci.Cart.AccountId == accountId);
 
             if (cartItem == null)
             {

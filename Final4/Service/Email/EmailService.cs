@@ -49,7 +49,7 @@ public class EmailService
         sb.AppendLine("<h1></h1>");
         // Thông tin người dùng
         sb.AppendLine("<p><strong>Order Name:</strong> " + order.OrderName + "</p>");
-        sb.AppendLine("<p><strong>Order ID:</strong> " + order.OrderId + "</p>");
+        sb.AppendLine("<p><strong>Order ID:</strong> " + order.Id + "</p>");
 
         // Danh sách sản phẩm trong đơn hàng
         sb.AppendLine("<h4>Items Purchased:</h4>");

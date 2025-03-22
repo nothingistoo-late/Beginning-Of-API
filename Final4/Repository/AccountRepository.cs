@@ -70,7 +70,7 @@ public class AccountRepository : GenericRepository<Account>, IAccountRepository
         {
             new Claim(ClaimTypes.Email, user.AccountEmail),
             new Claim(ClaimTypes.Role, user.AccountRoleID),
-            new Claim("AccountId", user.AccountId.ToString())
+            new Claim("Id", user.Id.ToString())
         };
 
         var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(key));
@@ -92,7 +92,7 @@ public class AccountRepository : GenericRepository<Account>, IAccountRepository
 
     public async Task<bool> DeleteUserById(int id)
     {
-        var user = await _dbContext.Accounts.FirstOrDefaultAsync(a => a.AccountId == id);
+        var user = await _dbContext.Accounts.FirstOrDefaultAsync(a => a.Id == id);
         if (user == null) return false;
 
         _dbContext.Accounts.Remove(user);

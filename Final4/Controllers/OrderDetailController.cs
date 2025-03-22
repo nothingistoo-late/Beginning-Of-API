@@ -25,7 +25,7 @@ namespace Final4.Controllers
                 .Select(od => new GetOrderDetail
                 {
                     OrderId = id,
-                    OrderDetailId = od.OrderDetailId,
+                    OrderDetailId = od.Id,
                     FlowerId = od.FlowerId,
                     Quantity = od.Quantity,
                     Note = od.Note

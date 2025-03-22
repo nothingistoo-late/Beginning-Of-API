@@ -30,7 +30,7 @@ namespace Final4.Controllers
                                  .Include(o => o.Account)
                                  .Select(o => new GetAllOrder
                                  {
-                                     OrderId = o.OrderId,
+                                     OrderId = o.Id,
                                      OrderName = o.OrderName,
                                      AccountId = o.AccountId,
                                      AccountName = o.Account.AccountName,
@@ -48,7 +48,7 @@ namespace Final4.Controllers
                               .Include(o => o.Account) // Bao gồm dữ liệu Account liên quan
                               .Select(o => new GetOrderByGmail
                               {
-                                  OrderId = o.OrderId,
+                                  OrderId = o.Id,
                                   OrderName = o.OrderName,
                                   AccountGmail = o.Account.AccountEmail
                               })
@@ -87,7 +87,7 @@ namespace Final4.Controllers
         {
             // Lấy thông tin Order từ cơ sở dữ liệu
 
-            var order = await _dbContext.Orders.FirstOrDefaultAsync(o => o.OrderId == id);
+            var order = await _dbContext.Orders.FirstOrDefaultAsync(o => o.Id == id);
             if (order== null) 
                 return NotFound();
 
@@ -164,7 +164,7 @@ namespace Final4.Controllers
 
             string body = _emailService.GenerateOrderEmailBody(order);
             var listUser = await _dbContext.Accounts.ToListAsync();
-            Account account = listUser.FirstOrDefault(o => o.AccountId == accountId);
+            Account account = listUser.FirstOrDefault(o => o.Id == accountId);
             await _emailService.SendEmailAsync(new List<string> { account.AccountEmail }, "Purche Successfully", body);
 
             // Xóa các sản phẩm trong giỏ hàng sau khi tạo đơn hàng

@@ -20,7 +20,7 @@ namespace Final4.Controllers
         {
             var orderDetail = await _dbcontext.OrderDetails
                                       .Include(od => od.Flower)
-                                      .FirstOrDefaultAsync(od => od.OrderDetailId == Rating.OrderDetailId);
+                                      .FirstOrDefaultAsync(od => od.Id == Rating.OrderDetailId);
 
             if (orderDetail == null)
             {
