@@ -8,6 +8,6 @@ public class MappingProfile : Profile
     {
         // Ánh xạ từ DTO -> Entity
         CreateMap<AddFlowerDTO, Flower>().ReverseMap();
-
+        CreateMap<UpdateFlowerDTO, Flower>().ReverseMap();
     }
 }

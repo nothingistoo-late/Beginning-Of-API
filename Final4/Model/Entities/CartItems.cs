@@ -6,7 +6,7 @@ public class CartItem
 {
     [Key]
     [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-    public int CartItemId { get; set; } // ID của CartItem
+    public int Id { get; set; } // ID của CartItem
 
     [ForeignKey("Cart")]
     public int CartId { get; set; } // ID của giỏ hàng

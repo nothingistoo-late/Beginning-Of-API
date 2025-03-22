@@ -38,9 +38,10 @@ namespace Final4.Repository
 
         }
 
-        public Task<bool> Delete(TEntity entity)
+        public async Task<bool> Delete(TEntity entity)
         {
-            throw new NotImplementedException();
+            _dbSet.Remove(entity);
+            return true;
         }
 
         public Task<List<TEntity>> GetAllAsync(Expression<Func<TEntity, bool>> predicate = null, params Expression<Func<TEntity, object>>[] includes)
@@ -81,22 +82,50 @@ namespace Final4.Repository
             return query.ToListAsync();
         }
 
-        public async Task<TEntity?> GetByIdAsync(int id,
-            params Expression<Func<TEntity, object>>[] includes)
+        //public async Task<TEntity?> GetByIdAsync(int id,
+        //    params Expression<Func<TEntity, object>>[] includes)
+        //{
+        //    IQueryable<TEntity> query = _dbSet;
+        //    if (includes != null)
+        //        foreach (var include in includes)
+        //            query = query.Include(include);
+        //    var result = await query.FirstOrDefaultAsync(x => EF.Property<int?>(x, "Id") == id);
+        //    return result;
+        //}
+
+        //public async Task<TEntity?> GetByIdAsync(Guid id, params Expression<Func<TEntity, object>>[] includes)
+        //{
+        //    IQueryable<TEntity> query = _dbSet;
+        //    if (includes != null)
+        //        foreach (var include in includes)
+        //            query = query.Include(include);
+        //    var result = await query.FirstOrDefaultAsync(x => EF.Property<Guid?>(x, "Id") == id);
+        //    return result;
+        //}
+
+        //public async Task<TEntity?> GetByIdAsync(int? id, params Expression<Func<TEntity, object>>[] includes)
+        //{
+        //    IQueryable<TEntity> query = _dbSet;
+        //    if (includes != null)
+        //        foreach (var include in includes)
+        //            query = query.Include(include);
+        //    var result = await query.FirstOrDefaultAsync(x => EF.Property<int?>(x, "Id") == id);
+        //    return result;
+        //}
+        public async Task<TEntity?> GetByIdAsync(object id, params Expression<Func<TEntity, object>>[] includes)
         {
             IQueryable<TEntity> query = _dbSet;
-            if (includes != null)
-                foreach (var include in includes)
-                    query = query.Include(include);
-            var result = await query.FirstOrDefaultAsync(x => EF.Property<int>(x, "Id") == id);
-            return result;
-        }
+            foreach (var include in includes)
+                query = query.Include(include);
 
-        public Task<TEntity?> GetByIdAsync(Guid id, params Expression<Func<TEntity, object>>[] includes)
-        {
-            throw new NotImplementedException();
-        }
+            if (id is int intId)
+                return await query.FirstOrDefaultAsync(x => EF.Property<int>(x, "Id") == intId);
 
+            if (id is Guid guidId)
+                return await query.FirstOrDefaultAsync(x => EF.Property<Guid>(x, "Id") == guidId);
+
+            return null;
+        }
         public IQueryable<TEntity> GetQueryable()
         {
             return _dbSet;

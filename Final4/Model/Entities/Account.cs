@@ -8,7 +8,7 @@ namespace Final4.Model.Entities
     {
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        public int AccountId { get; set; }
+        public int Id { get; set; }
         public string? AccountName { get; set; }
         public required string AccountEmail { get; set; }
         public required string AccountPassword { get; set; }

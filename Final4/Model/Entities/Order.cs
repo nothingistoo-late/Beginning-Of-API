@@ -8,7 +8,7 @@ namespace Final4.Model.Entities
     {
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        public int OrderId { get; set; }  // Khóa chính
+        public int Id { get; set; }  // Khóa chính
         public required string OrderName { get; set; }
         public string OrderStatus { get; set; }
         public DateTime CreatedAt { get; set; }

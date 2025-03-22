@@ -8,7 +8,7 @@ namespace Final4.Model.Entities
     {
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        public int FlowerId { get; set; }
+        public int Id { get; set; }
         public required string FlowerName { get; set; }
         public string? FlowerDescription { get; set; }
         public required decimal FlowerPrice { get; set; }

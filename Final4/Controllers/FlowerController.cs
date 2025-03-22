@@ -200,5 +200,17 @@ namespace Final4.Controllers
             return Ok(result);
         }
 
+        [HttpPut]
+        [Route("UpdateFlower")]
+        public async Task<IActionResult> UpdateFlower([FromBody] UpdateFlowerDTO flower)
+        {
+            if (flower == null)
+                return BadRequest("Flower cannot be null");
+            var result = await _flowerService.UpdateFlowerAsync(flower);
+            if (!result.IsSuccess)
+                return BadRequest(result);
+            return Ok(result);
+        }
+
     }
 }

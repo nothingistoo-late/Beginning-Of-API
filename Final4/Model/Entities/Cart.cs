@@ -8,7 +8,7 @@ namespace Final4.Model.Entities
     {
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        public int CartId { get; set; }
+        public int Id { get; set; }
 
         [ForeignKey("Account")]
         public int AccountId { get; set; } // Liên kết với tài khoản

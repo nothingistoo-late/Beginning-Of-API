@@ -7,7 +7,7 @@ namespace Final4.Model.Entities
     {
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        public int CommentId { get; set; }  // Khóa chính của Comment
+        public int Id { get; set; }  // Khóa chính của Comment
 
         [Required]
         public string Content { get; set; }  // Nội dung bình luận

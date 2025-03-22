@@ -8,7 +8,7 @@ namespace Final4.Model.Entities
     {
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        public int RatingId { get; set; }  // Khóa chính của Rating
+        public int Id { get; set; }  // Khóa chính của Rating
 
         [Range(1, 5)]  // Giới hạn rating từ 1 đến 5
         public int RatingValue { get; set; }  // Đánh giá (1 đến 5)

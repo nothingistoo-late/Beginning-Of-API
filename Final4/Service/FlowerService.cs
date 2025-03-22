@@ -57,11 +57,37 @@ namespace Final4.Service
             return ApiResult<List<Flower>>.Succeed(flowers, "Get All Flower Compeleted");
         }
 
-        public Task<ApiResult<UpdateFlowerDTO>> UpdateFlowerAsync(UpdateFlowerDTO flower)
+        public async Task<ApiResult<UpdateFlowerDTO>> UpdateFlowerAsync(UpdateFlowerDTO flower)
         {
-            throw new NotImplementedException();
+
+            var flowerEntity = await _unitOfWork.FlowerRepository.GetByIdAsync(flower.FlowerId);
+            if (flowerEntity == null)
+                return ApiResult<UpdateFlowerDTO>.Error(flower, "Flower Id = "+ flower.FlowerId + " Does Not Exist!!\n Please Check FlowerID Again!!");
+            else
+
+            {
+                //// Chỉ cập nhật các trường nếu có giá trị
+                //if (!string.IsNullOrEmpty(flower.FlowerName))
+                //    flowerEntity.FlowerName = flower.FlowerName;
+
+                //if (!string.IsNullOrEmpty(flower.FlowerDescription))
+                //    flowerEntity.FlowerDescription = flower.FlowerDescription;
+
+                //if (!string.IsNullOrEmpty(flower.ImgUrl))
+                //    flowerEntity.FlowerImgUrl = flower.ImgUrl;
+
+                //if (flower.FlowerQuantity.HasValue)
+                //    flowerEntity.FlowerQuantity = flower.FlowerQuantity.Value;
+
+                //if (flower.FlowerPrice.HasValue)
+                //    flowerEntity.FlowerPrice = flower.FlowerPrice.Value;
+                _mapper.Map(flower,flowerEntity);
+
+                await _unitOfWork.SaveChangesAsync();
+                return ApiResult<UpdateFlowerDTO>.Succeed(flower,"Update Flower Successfully");
+            }
         }
 
-        //public async Task<ApiResult>
-    }
+            //public async Task<ApiResult>
+        }
 }

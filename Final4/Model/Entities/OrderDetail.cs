@@ -7,7 +7,7 @@ namespace Final4.Model.Entities
     {
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        public int OrderDetailId { get; set; }
+        public int Id { get; set; }
 
         [ForeignKey("Order")]
         public int OrderId { get; set; }      // Khóa ngoại liên kết với Order
