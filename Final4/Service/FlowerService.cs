@@ -66,22 +66,22 @@ namespace Final4.Service
             else
 
             {
-                //// Chỉ cập nhật các trường nếu có giá trị
-                //if (!string.IsNullOrEmpty(flower.FlowerName))
-                //    flowerEntity.FlowerName = flower.FlowerName;
+                // Chỉ cập nhật các trường nếu có giá trị
+                if (!string.IsNullOrEmpty(flower.FlowerName))
+                    flowerEntity.FlowerName = flower.FlowerName;
 
-                //if (!string.IsNullOrEmpty(flower.FlowerDescription))
-                //    flowerEntity.FlowerDescription = flower.FlowerDescription;
+                if (!string.IsNullOrEmpty(flower.FlowerDescription))
+                    flowerEntity.FlowerDescription = flower.FlowerDescription;
 
-                //if (!string.IsNullOrEmpty(flower.ImgUrl))
-                //    flowerEntity.FlowerImgUrl = flower.ImgUrl;
+                if (!string.IsNullOrEmpty(flower.ImgUrl))
+                    flowerEntity.FlowerImgUrl = flower.ImgUrl;
 
-                //if (flower.FlowerQuantity.HasValue)
-                //    flowerEntity.FlowerQuantity = flower.FlowerQuantity.Value;
+                if (flower.FlowerQuantity.HasValue)
+                    flowerEntity.FlowerQuantity = flower.FlowerQuantity.Value;
 
-                //if (flower.FlowerPrice.HasValue)
-                //    flowerEntity.FlowerPrice = flower.FlowerPrice.Value;
-                _mapper.Map(flower,flowerEntity);
+                if (flower.FlowerPrice.HasValue)
+                    flowerEntity.FlowerPrice = flower.FlowerPrice.Value;
+                //_mapper.Map(flower,flowerEntity);
 
                 await _unitOfWork.SaveChangesAsync();
                 return ApiResult<UpdateFlowerDTO>.Succeed(flower,"Update Flower Successfully");

@@ -160,7 +160,7 @@ namespace Final4.Controllers
             try
             {
                 var results = await _flowerService.GetAllFlowerAsync();
-                if (results.IsSuccess)
+                if (results.ApiIsSuccess)
                     return Ok(results);
                 return BadRequest(results);
 
@@ -195,7 +195,7 @@ namespace Final4.Controllers
             if (flowers == null || !flowers.Any())
                 return BadRequest("Flower list cannot be empty");
             var result = await _flowerService.AddFlowerAsync(flowers);
-            if (!result.IsSuccess)
+            if (!result.ApiIsSuccess)
                 return BadRequest(result);
             return Ok(result);
         }
@@ -207,7 +207,7 @@ namespace Final4.Controllers
             if (flower == null)
                 return BadRequest("Flower cannot be null");
             var result = await _flowerService.UpdateFlowerAsync(flower);
-            if (!result.IsSuccess)
+            if (!result.ApiIsSuccess)
                 return BadRequest(result);
             return Ok(result);
         }
