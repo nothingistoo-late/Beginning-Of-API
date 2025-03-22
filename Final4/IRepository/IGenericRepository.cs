@@ -5,7 +5,7 @@ namespace Final4.IRepository
     public interface IGenericRepository<TEntity> where TEntity : class
     {
         Task<TEntity> AddAsync(TEntity entity);
-        Task AddRangeAsync(List<TEntity> entities);
+        Task<bool> AddRangeAsync(List<TEntity> entities);
         public Task<List<TEntity>> GetAllAsync(Expression<Func<TEntity, bool>> predicate = null!, params Expression<Func<TEntity, object>>[] includes);
         public Task<List<TEntity>> GetAllHaveFilterAsync(Expression<Func<TEntity, bool>> predicate = null!, params Expression<Func<TEntity, object>>[] includes);
         IQueryable<TEntity> GetQueryable();

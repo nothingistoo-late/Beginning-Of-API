@@ -5,6 +5,7 @@ using Final4.Repository;
 using Final4.Service;
 using Final4.Service.Email;
 using Microsoft.EntityFrameworkCore;
+using AutoMapper;
 
 namespace Final4.Injection
 {
@@ -12,6 +13,8 @@ namespace Final4.Injection
     {
         public static IServiceCollection ServicesInjection(this IServiceCollection services, IConfiguration configuration)
         {
+            services.AddScoped<IUnitOfWork, UnitOfWork>();
+
             // add repository
             services.AddScoped<IFlowerRepository, FlowerRepository>();
             services.AddScoped<IAccountRepository, AccountRepository>();
@@ -19,10 +22,13 @@ namespace Final4.Injection
             // add service
             services.AddScoped<IFlowerService, FlowerService>();
 
-            // Đăng ký EmailService
+            // add mapper 
+            services.AddAutoMapper(typeof(MappingProfile));
+
+            // Register EmailService
             services.AddScoped<EmailService>();
 
-            // Đăng ký Background Service
+            // Register Background Service
             services.AddHostedService<EmailBackgroundService>();
 
             return services;

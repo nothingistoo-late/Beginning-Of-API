@@ -31,9 +31,11 @@ namespace Final4.Repository
             }
         }
 
-        public async Task AddRangeAsync(List<TEntity> entities)
+        public async Task<bool> AddRangeAsync(List<TEntity> entities)
         {
             await _dbSet.AddRangeAsync(entities);
+            return true; // Đảm bảo return bool
+
         }
 
         public Task<bool> Delete(TEntity entity)

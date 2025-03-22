@@ -5,6 +5,6 @@ namespace Final4.Model.Entities
 {
     public class BaseEntity
     {
-        public string Description { get; set; }
+        public string? Description { get; set; } = string.Empty;
     }
 }

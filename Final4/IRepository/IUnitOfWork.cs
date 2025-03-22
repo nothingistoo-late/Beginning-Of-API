@@ -5,7 +5,8 @@ namespace Final4.IRepository
     public interface IUnitOfWork : IDisposable
     {
         public IAccountRepository AccountRepository { get; }
-        Task<int> SaveChangeAsync();
+        public IFlowerRepository FlowerRepository { get; }
+        Task<int> SaveChangesAsync();
         Task<IDbContextTransaction> BeginTransactionAsync();
 
 

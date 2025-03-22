@@ -9,6 +9,7 @@ namespace Final4.DTO.Flower
         public string? FlowerDescription { get; set; }
         public required decimal FlowerPrice { get; set; }
         public required decimal FlowerQuantity  { get; set; }
-        public required string ImgUrl { get; set; }
+        public required string FlowerImgUrl { get; set; }
+        public DateTime CreatedAt { get; set; }
     }
 }

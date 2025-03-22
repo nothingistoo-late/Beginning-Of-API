@@ -171,24 +171,33 @@ namespace Final4.Controllers
             }
         }
 
-        [HttpGet]
-        [Route("GetAllFlowerByFlowerName{FlowerName}")]
-        public async Task<IActionResult> GetFlowerByName(string FlowerName)
+        [HttpGet("GetAllFlowerByFlowerName")]
+        public async Task<IActionResult> GetFlowerByName([FromQuery] string FlowerName)
         {
-            //var flowers = await _dbcontext.Flowers
-            //    .Where(x => x.FlowerName.ToLower().Contains(FlowerName.ToLower()))
-            //    .ToListAsync();
             try
             {
+                if (string.IsNullOrWhiteSpace(FlowerName))
+                    return BadRequest(ApiResult<List<Flower>>.Error(null, "Flower name is required"));
+
                 var results = await _flowerService.GetAllFlowerByNameAsync(FlowerName);
-                if (results.IsSuccess)
-                    return Ok(results);
-                return BadRequest(results);
+                return Ok(results); // 🔥 Luôn trả về 200 OK
             }
             catch (Exception ex)
             {
-                return BadRequest(ApiResult<object>.Fail(ex));
+                return StatusCode(500, ApiResult<object>.Fail(ex)); // 🔥 Trả về 500 nếu có lỗi hệ thống
             }
+        }
+
+        [HttpPost]
+        [Route("AddFlower")]
+        public async Task<IActionResult> AddFlowers(List<AddFlower> flowers)
+        {
+            if (flowers == null || !flowers.Any())
+                return BadRequest("Flower list cannot be empty");
+            var result = await _flowerService.AddFlowerAsync(flowers);
+            if (!result.IsSuccess)
+                return BadRequest(result);
+            return Ok(result);
         }
 
     }

@@ -160,4 +160,29 @@ public class AccountRepository : GenericRepository<Account>, IAccountRepository
 
         return tokenHandler.WriteToken(token);
     }
+
+    Task<bool> IAccountRepository.RegisterUserAccounts(List<RegisterUserAccount> accounts)
+    {
+        throw new NotImplementedException();
+    }
+
+    Task<string?> IAccountRepository.Login(LoginUserAccount obj)
+    {
+        throw new NotImplementedException();
+    }
+
+    Task<Account?> IAccountRepository.GetUserByEmail(string email)
+    {
+        throw new NotImplementedException();
+    }
+
+    Task<bool> IAccountRepository.ResetPassword(string email, ResetPassword obj)
+    {
+        throw new NotImplementedException();
+    }
+
+    Task<string> IAccountRepository.FastLogin()
+    {
+        throw new NotImplementedException();
+    }
 }
