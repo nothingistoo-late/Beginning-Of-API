@@ -6,6 +6,7 @@ namespace Final4.IRepository
     {
         public IAccountRepository AccountRepository { get; }
         public IFlowerRepository FlowerRepository { get; }
+        public IOrderRepository OrderRepository { get; }
         Task<int> SaveChangesAsync();
         Task<IDbContextTransaction> BeginTransactionAsync();
 

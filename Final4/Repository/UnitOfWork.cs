@@ -10,16 +10,21 @@ namespace Final4.Repository
         private readonly ApplicationDBContext _dbContext;
         private readonly IAccountRepository _accountRepository;
         private readonly IFlowerRepository _flowerRepository;
+        private readonly IOrderRepository _orderRepository;
 
-        public UnitOfWork(ApplicationDBContext dbContext, IAccountRepository accountRepository, IFlowerRepository flowerRepository)
+        public UnitOfWork(ApplicationDBContext dbContext, IAccountRepository accountRepository, IFlowerRepository flowerRepository, IOrderRepository orderRepository)
         {
             _dbContext = dbContext;
             _accountRepository = accountRepository;
             _flowerRepository = flowerRepository;
+            _orderRepository = orderRepository;
         }
 
         public IAccountRepository AccountRepository => _accountRepository;
         public IFlowerRepository FlowerRepository => _flowerRepository;
+
+        public IOrderRepository OrderRepository => _orderRepository;
+
         public void Dispose()
         {
             _dbContext.Dispose();

@@ -55,9 +55,8 @@ namespace Final4.Service
         {
             var flowers = await _unitOfWork.FlowerRepository.GetAllAsync();
             if (flowers == null)
-                return ApiResult<List<Flower>>.Error(null, "nothing found");
+                return ApiResult<List<Flower>>.Error(null, "Nothing found!!!");
             return ApiResult<List<Flower>>.Succeed(flowers, "Get All Flower Compeleted");
-            //return ApiResult<List<Flower>>.Succeed(flowers, "success");
         }
 
         public async Task<ApiResult<List<Flower>>> GetAllFlowerByNameAsync(string flowerName)

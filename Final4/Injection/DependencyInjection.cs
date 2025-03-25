@@ -18,9 +18,11 @@ namespace Final4.Injection
             // add repository
             services.AddScoped<IFlowerRepository, FlowerRepository>();
             services.AddScoped<IAccountRepository, AccountRepository>();
+            services.AddScoped<IOrderRepository, OrderRepository>();
 
             // add service
             services.AddScoped<IFlowerService, FlowerService>();
+            services.AddScoped<IOrderService, OrderService>();
             // add mapper 
             services.AddAutoMapper(typeof(MappingProfile));
 

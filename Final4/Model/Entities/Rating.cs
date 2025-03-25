@@ -22,7 +22,6 @@ namespace Final4.Model.Entities
         }
         public int OrderDetailId { get; set; }  // Khóa ngoại liên kết với OrderDetail
         [JsonIgnore]
-        public virtual OrderDetail OrderDetail { get; set; }  // Điều hướng đến OrderDetail
         public virtual ICollection<Comment> Comments { get; set; }  // Danh sách các bình luận
 
     }

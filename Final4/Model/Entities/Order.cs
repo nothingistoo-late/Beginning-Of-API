@@ -19,8 +19,6 @@ namespace Final4.Model.Entities
 
         [ForeignKey("Account")]
         public int AccountId { get; set; }  // Khóa ngoại liên kết với User
-        public virtual Account? Account { get; set; }  // Điều hướng đến User
-        [JsonIgnore]
 
         public virtual ICollection<OrderDetail> OrderDetails { get; set; }  
 
