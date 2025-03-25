@@ -3,6 +3,7 @@ using Final4.DTO.Flower;
 using Final4.IRepository;
 using Final4.IService;
 using Final4.Model.Entities;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
 using Repositories.Commons;
 
@@ -67,6 +68,40 @@ namespace Final4.Service
             return ApiResult<List<Flower>>.Succeed(flowers, "Get All Flower Compeleted");
         }
 
+        public async Task<ApiResult<List<Flower>>> SearchFlower(string? name, string? description, decimal? priceFrom, decimal? priceTo, decimal? quantity)
+        {
+
+            var listFlower = await _unitOfWork.FlowerRepository.GetAllAsync();
+            // Lọc theo tên sản phẩm
+            if (!string.IsNullOrEmpty(name))
+            {
+                listFlower = listFlower.Where(p => p.FlowerName.ToLower().Contains(name.ToLower())).ToList();
+            }
+
+            // Lọc theo danh mục
+            if (!string.IsNullOrEmpty(description))
+            {
+                listFlower = listFlower.Where(p => p.FlowerDescription.ToLower().Contains(description.ToLower())).ToList();
+            }
+
+            // Lọc theo giá thấp nhất (>=)
+            if (priceFrom.HasValue)
+            {
+                listFlower = listFlower.Where(p => p.FlowerPrice >= priceFrom.Value).ToList();
+            }
+
+            // Lọc theo giá cao nhất (<=)
+            if (priceTo.HasValue)
+            {
+                listFlower = listFlower.Where(p => p.FlowerPrice <= priceTo.Value).ToList();
+            }
+
+            if (listFlower.IsNullOrEmpty())
+                return ApiResult<List<Flower>>.Error(null, "No Flower With That Requirement!!");
+            return ApiResult<List<Flower>>.Succeed(listFlower, "Search Flower Successfully");
+        }
+
+
         public async Task<ApiResult<UpdateFlowerDTO>> UpdateFlowerAsync(UpdateFlowerDTO flower)
         {
 
@@ -97,6 +132,8 @@ namespace Final4.Service
                 return ApiResult<UpdateFlowerDTO>.Succeed(flower, "Update Flower Successfully");
             }
         }
+
+        
 
         //public async Task<ApiResult>
     }
